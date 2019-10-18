@@ -5,7 +5,7 @@ const disciplines = require('express').Router()
 
 // Functions under /
 const getAllDisciplines = require('./getAllDisciplines')
-// const createDisciplines = require('./createDisciplines')
+const createDiscipline = require('./createDiscipline')
 // const updateDisciplines = require('./updateDisciplines')
 // const deleteDisciplines = require('./deleteDisciplines')
 
@@ -13,6 +13,6 @@ const getAllDisciplines = require('./getAllDisciplines')
 disciplines.get('/', getAllDisciplines)
 // disciplines.put('/', updateDisciplines)
 // disciplines.delete('/:id', deleteDisciplines)
-// disciplines.post('/', createDisciplines)
+disciplines.post('/', createDiscipline)
 
 module.exports = disciplines

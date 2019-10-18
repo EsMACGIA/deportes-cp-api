@@ -58,14 +58,14 @@ async function getAllDisciplines () {
 /**
  * Create user into the database
  */
-async function createUser (userData) {
+async function createDiscipline (disciplineData) {
 
   var data = null 
 
 
   try {
 
-    data = await dbPostgres.sql('users.createUser', userData)
+    data = await dbPostgres.sql('disciplines.createDiscipline', disciplineData)
 
     debug('Date: ', data)
 
@@ -104,7 +104,7 @@ async function updateUser (user) {
 
 module.exports = {
   getAllDisciplines,
-  createUser,
+  createDiscipline,
   updateUser,
   deleteUser
 }

@@ -82,13 +82,13 @@ async function createUser (userData) {
   return data
 
 }
-async function updateUser (user) {
+async function updateDiscipline (discipline) {
 
   var data = null
 
   try {
     
-    data = await dbPostgres.sql('users.updateUser', user)
+    data = await dbPostgres.sql('disciplines.updateDiscipline', discipline)
 
   } catch (error) {
     // Error handling
@@ -105,6 +105,6 @@ async function updateUser (user) {
 module.exports = {
   getAllDisciplines,
   createUser,
-  updateUser,
+  updateDiscipline,
   deleteUser
 }

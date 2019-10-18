@@ -1,28 +1,19 @@
 'use strict'
 
+// Configuration 
+const config = require('./config')
+
 // Dependencies
 const chalk = require('chalk')
-const debug = require('debug')('deportes-cp-api:index')
+const debug = require('debug')(`${config.debug}index`)
 const express = require('express')
 
 // Express.js Configuration
 const app = express()
 
-// Configuration 
-// TODO: Export to a config.js file
-const config = require('./config')
-
-// TODO: This should be not here, export to a file
-// GET
-app.get('/', (req, res) => {
-  let body = {
-    nameserver: 'DeportesCP Backend',
-    author: 'MACGIA',
-    port: '3000'
-  }
-
-  res.send(body)
-})
+// Routing 
+const routes = require('./routes')
+app.use('/', routes)
 
 // Router for 404 (Not Found)
 app.get('*', (req, res) => {

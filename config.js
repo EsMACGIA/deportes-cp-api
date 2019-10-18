@@ -10,11 +10,14 @@ const config = {
 
   // PostgreSQL
   postgres: {
-    user: config.POSTGRES_USER || '',
-    password: config.POSTGRES_PASSWORD || '',
-    port: config.POSTGRES_PORT || '',
-    db: config.POSTGRES_DB || ''
-  }
+    user: process.env.POSTGRES_USER || '',
+    password: process.env.POSTGRES_PASSWORD || '',
+    port: process.env.POSTGRES_PORT || '',
+    db: process.env.POSTGRES_DB || ''
+  },
+
+  // Debug
+  debug: 'deportes-cp-api:'
 }
 
 module.exports = config

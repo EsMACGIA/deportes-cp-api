@@ -1,13 +1,11 @@
 'use strict'
 
 // Controllers
-const usersController = require('../../controllers/users.controller')
+const disciplinesController = require('../../controllers/disciplines.controller')
 
 module.exports = async (req, res) => {
 
-  var userData = req.body
-
-  var data = await usersController.createUser(userData)
+  var data = await disciplinesController.getAllDisciplines()
 
   if (data.constructor === Array) {
     res.status(200)

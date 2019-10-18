@@ -9,13 +9,21 @@ const dbPostgres = require('../db/').postgres()
 /**
  * Deletes a user in the database
  */
+<<<<<<< HEAD
 async function deleteUser (id) {
+=======
+async function deleteDiscipline (id) {
+>>>>>>> 1ed5573cd495dd42af0ada66915f61766b199b9c
 
   var data = null
 
   try {
 
+<<<<<<< HEAD
     data = await dbPostgres.sql('users.deleteUser', { id })
+=======
+    data = await dbPostgres.sql('disciplines.deleteDiscipline', { id })
+>>>>>>> 1ed5573cd495dd42af0ada66915f61766b199b9c
 
   } catch (error) {
     // Error handling
@@ -37,7 +45,11 @@ async function getAllDisciplines () {
   var data = null
 
   try {
+<<<<<<< HEAD
     data = await dbPostgres.sql('users.getAllUsers')
+=======
+    data = await dbPostgres.sql('disciplines.getAllDisciplines')
+>>>>>>> 1ed5573cd495dd42af0ada66915f61766b199b9c
 
     debug('Data: ', data)
     
@@ -82,13 +94,13 @@ async function createDiscipline (disciplineData) {
   return data
 
 }
-async function updateUser (user) {
+async function updateDiscipline (discipline) {
 
   var data = null
 
   try {
     
-    data = await dbPostgres.sql('users.updateUser', user)
+    data = await dbPostgres.sql('disciplines.updateDiscipline', discipline)
 
   } catch (error) {
     // Error handling
@@ -105,6 +117,6 @@ async function updateUser (user) {
 module.exports = {
   getAllDisciplines,
   createDiscipline,
-  updateUser,
-  deleteUser
+  deleteDiscipline,
+  updateDiscipline
 }

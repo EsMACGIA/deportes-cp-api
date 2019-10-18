@@ -9,13 +9,13 @@ const dbPostgres = require('../db/').postgres()
 /**
  * Deletes a user in the database
  */
-async function deleteUser (id) {
+async function deleteDiscipline (id) {
 
   var data = null
 
   try {
 
-    data = await dbPostgres.sql('users.deleteUser', { id })
+    data = await dbPostgres.sql('disciplines.deleteDiscipline', { id })
 
   } catch (error) {
     // Error handling
@@ -106,5 +106,5 @@ module.exports = {
   getAllDisciplines,
   createUser,
   updateUser,
-  deleteUser
+  deleteDiscipline,
 }

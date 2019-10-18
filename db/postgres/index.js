@@ -11,8 +11,10 @@ const Path = require('path')
 var connectionString = process.env.DATABASE_URL || null
 
 if (!connectionString) {
-  connectionString = `postgres://${config.postgres.user}:${config.postgres.password}@postgres:${config.postgres.port}/${config.postgres.db}?sslmode=disable`
+  connectionString = `postgres://${config.postgres.user}:${config.postgres.password}@localhost:${config.postgres.port}/${config.postgres.db}?sslmode=disable`
 }
+
+console.log('ConnectionString: ', connectionString)
 
 // Database Configuration
 const db = new TinyPg({

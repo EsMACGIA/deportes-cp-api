@@ -11,9 +11,13 @@ const express = require('express')
 // Express.js Configuration
 const app = express()
 
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 // Routing 
 const routes = require('./routes')
-app.use('/', routes)
+app.use('/api', routes)
 
 // Router for 404 (Not Found)
 app.get('*', (req, res) => {

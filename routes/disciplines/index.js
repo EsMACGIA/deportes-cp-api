@@ -6,12 +6,12 @@ const disciplines = require('express').Router()
 // Functions under /
 const getAllDisciplines = require('./getAllDisciplines')
 // const createDisciplines = require('./createDisciplines')
-// const updateDisciplines = require('./updateDisciplines')
+const updateDiscipline = require('./updateDiscipline')
 // const deleteDisciplines = require('./deleteDisciplines')
 
 // Endpoints
 disciplines.get('/', getAllDisciplines)
-// disciplines.put('/', updateDisciplines)
+disciplines.put('/', updateDiscipline)
 // disciplines.delete('/:id', deleteDisciplines)
 // disciplines.post('/', createDisciplines)
 

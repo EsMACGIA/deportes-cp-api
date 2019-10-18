@@ -55,7 +55,28 @@ async function getAllUsers () {
 
 }
 
+async function updateUser (user) {
+
+  var data = null
+
+  try {
+    
+    data = await dbPostgres.sql('users.updateUser', user)
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'Something is wrong!'
+    }
+  }
+
+  return data
+
+}
+
 module.exports = {
-  getAllUsers,
+  getAllUsers, 
+  updateUser,
   deleteUser
 }

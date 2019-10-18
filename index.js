@@ -10,7 +10,7 @@ const app = express()
 
 // Configuration 
 // TODO: Export to a config.js file
-const port = 3000
+const config = require('./config')
 
 // TODO: This should be not here, export to a file
 // GET
@@ -35,8 +35,8 @@ app.get('*', (req, res) => {
 
 // Express.js Initializer
 function initExpress() {
-  app.listen(port, () => {
-    console.log(`${chalk.green('[DeportesCP API]:')} Running on port ${chalk.green(port)}`)
+  app.listen(config.port, () => {
+    console.log(`${chalk.green('[DeportesCP API]:')} Running on port ${chalk.green(config.port)}`)
   })
 }
 

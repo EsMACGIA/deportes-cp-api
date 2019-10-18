@@ -11,6 +11,10 @@ const express = require('express')
 // Express.js Configuration
 const app = express()
 
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 // Routing 
 const routes = require('./routes')
 app.use('/api', routes)

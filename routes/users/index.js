@@ -5,6 +5,7 @@ const users = require('express').Router()
 
 // Functions under /
 const getAllUsers = require('./getAllUsers')
+const createUser = require('./createUser')
 const updateUser = require('./updateUser')
 const deleteUser = require('./deleteUser')
 
@@ -12,5 +13,6 @@ const deleteUser = require('./deleteUser')
 users.get('/', getAllUsers)
 users.put('/', updateUser)
 users.delete('/:id', deleteUser)
+users.post('/', createUser)
 
 module.exports = users

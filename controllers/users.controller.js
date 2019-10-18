@@ -55,6 +55,33 @@ async function getAllUsers () {
 
 }
 
+/**
+ * Create user into the database
+ */
+async function createUser (userData) {
+
+  var data = null 
+
+
+  try {
+
+    data = await dbPostgres.sql('users.createUser', userData)
+
+    debug('Date: ', data)
+
+    data = data.rows
+
+  }catch (error) {
+    //Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'Something is wrong!'
+    }
+  }
+
+  return data
+
+}
 async function updateUser (user) {
 
   var data = null
@@ -76,7 +103,8 @@ async function updateUser (user) {
 }
 
 module.exports = {
-  getAllUsers, 
+  getAllUsers,
+  createUser,
   updateUser,
   deleteUser
 }

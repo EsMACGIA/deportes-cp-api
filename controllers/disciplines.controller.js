@@ -9,21 +9,13 @@ const dbPostgres = require('../db/').postgres()
 /**
  * Deletes a user in the database
  */
-<<<<<<< HEAD
-async function deleteUser (id) {
-=======
 async function deleteDiscipline (id) {
->>>>>>> 1ed5573cd495dd42af0ada66915f61766b199b9c
 
   var data = null
 
   try {
 
-<<<<<<< HEAD
-    data = await dbPostgres.sql('users.deleteUser', { id })
-=======
     data = await dbPostgres.sql('disciplines.deleteDiscipline', { id })
->>>>>>> 1ed5573cd495dd42af0ada66915f61766b199b9c
 
   } catch (error) {
     // Error handling
@@ -45,11 +37,7 @@ async function getAllDisciplines () {
   var data = null
 
   try {
-<<<<<<< HEAD
-    data = await dbPostgres.sql('users.getAllUsers')
-=======
     data = await dbPostgres.sql('disciplines.getAllDisciplines')
->>>>>>> 1ed5573cd495dd42af0ada66915f61766b199b9c
 
     debug('Data: ', data)
     

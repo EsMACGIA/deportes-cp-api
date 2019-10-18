@@ -37,7 +37,7 @@ async function getAllDisciplines () {
   var data = null
 
   try {
-    data = await dbPostgres.sql('users.getAllUsers')
+    data = await dbPostgres.sql('disciplines.getAllDisciplines')
 
     debug('Data: ', data)
     

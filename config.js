@@ -18,6 +18,7 @@ const config = {
 
   // Hashing.js
   salt: process.env.SALT || '',
+  
   // Debug
   debug: 'deportes-cp-api:'
 }

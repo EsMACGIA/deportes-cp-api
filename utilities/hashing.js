@@ -1,8 +1,12 @@
+'use strict'
 
 const bcrypt = require('bcrypt')
 const config = require('../config')
 const debug = require('debug')(`${config.debug}utilities:hashing`)
 
+/**
+ * Creates a hash from a string
+ */
 function createHash (string) {
 
   try {
@@ -12,8 +16,8 @@ function createHash (string) {
   } catch (error) {
     // Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
+    hash = {
+      error: `Error hashing the provided string ${error}`
     }
   }
 
@@ -21,6 +25,9 @@ function createHash (string) {
 
 }
 
+/**
+ * Compares a string with a hash to verify them
+ */
 function verifyHash (string, hash) {
 
   try {
@@ -30,8 +37,8 @@ function verifyHash (string, hash) {
   } catch (error) {
     // Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
+    verification = {
+      error: `Error comparing the string with the hash ${error}`
     }
   }
 

@@ -74,11 +74,16 @@ async function createDiscipline (disciplineData) {
   }catch (error) {
     //Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
+    if (error.queryContext.error.constraint == 'discipline_name_key') {
+      data = {
+        error: 'name_key is already in the database'
+      }
+    }else{
+      data = {
+        error: 'Unidentified error'
+      }
     }
   }
-
   return data
 
 }

@@ -16,6 +16,8 @@ const config = {
     db: process.env.POSTGRES_DB || ''
   },
 
+  // Hashing.js
+  salt: process.env.SALT || '',
   // Debug
   debug: 'deportes-cp-api:'
 }

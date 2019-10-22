@@ -71,7 +71,7 @@ async function createUser (userData) {
     debug('Date: ', data)
 
     data = data.rows
-    
+    
   }catch (error) {
     //Error handling
     debug('Error: ', error)

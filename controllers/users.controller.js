@@ -6,6 +6,7 @@ const config = require('../config')
 const debug = require('debug')(`${config.debug}controllers:users`)
 const dbPostgres = require('../db/').postgres()
 const hashing = require('../utilities/hashing')
+const objFuncs = require('../utilities/objectFunctions')
 
 /**
  * Deletes a user in the database
@@ -63,6 +64,14 @@ async function createUser (userData) {
 
   var data = null 
 
+  var rightBody = objFuncs.compareUserObject(userData)
+  // error in the body
+  if(!rightBody[0]){
+    var data = {
+      error: rightBody[1]
+    }
+    return data
+  }
 
   try {
     userData.password = await hashing.createHash(userData.password)

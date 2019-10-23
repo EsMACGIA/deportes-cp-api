@@ -3,4 +3,4 @@ UPDATE "deportes-cp".users
 SET name = :name,
     password = :password,
     type = :type
-WHERE id = :id
+WHERE email = :email

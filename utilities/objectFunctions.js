@@ -21,6 +21,7 @@ function compareUserObject(obj1){
   var model_body = {
     email: '',
     name: '',
+    lastname: '',
     password: '',
     ci: 0,
     type: 0
@@ -41,7 +42,24 @@ function compareUserObject(obj1){
 
 }
 
+// function that takes a user body and checks if is correct returning a 
+// data object, if is not correct the data object will have the 'error' key
+function checkUserBody(body){
+
+    var rightBody = compareUserObject(body)
+    var data = {}
+    // error in the body
+    if(!rightBody[0]){
+      data = {
+        error: rightBody[1],
+        code: 400
+      }
+    }
+    return data;
+}
+
 module.exports = {
     compareObjects,
-    compareUserObject
+    compareUserObject,
+    checkUserBody
 }

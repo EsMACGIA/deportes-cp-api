@@ -64,15 +64,11 @@ async function createUser (userData) {
 
   var data = null 
 
-  var rightBody = objFuncs.compareUserObject(userData)
-  // error in the body
-  if(!rightBody[0]){
-    var data = {
-      error: rightBody[1]
-    }
-    return data
+  var data_body = objFuncs.checkUserBody(userData)
+  if( data_body.error ){
+    return data_body
   }
-
+  
   try {
     userData.password = await hashing.createHash(userData.password)
     data = await dbPostgres.sql('users.createUser', userData)
@@ -95,6 +91,10 @@ async function createUser (userData) {
 async function updateUser (user) {
 
   var data = null
+  var data_body = objFuncs.checkUserBody(user)
+  if( data_body.error ){
+    return data_body
+  }
 
   try {
     user.password = await hashing.createHash(user.password)

@@ -3,7 +3,7 @@
 // Configuration 
 const config = require('../config')
 
-const debug = require('debug')(`${config.debug}controllers:users`)
+const debug = require('debug')(`${config.debug}controllers:disciplines`)
 const dbPostgres = require('../db/').postgres()
 
 /**
@@ -74,11 +74,10 @@ async function createDiscipline (disciplineData) {
   }catch (error) {
     //Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
-    }
-  }
 
+    // Set error message
+    data = handleDatabaseValidations(error)
+  }
   return data
 
 }
@@ -93,13 +92,30 @@ async function updateDiscipline (discipline) {
   } catch (error) {
     // Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
-    }
+
+    // Set error message
+    data = handleDatabaseValidations(error)
   }
 
   return data
 
+}
+
+function handleDatabaseValidations(error) {
+
+  var data = null
+
+  // Check if the database constraint error matches the expected error
+  if (error.queryContext.error.constraint == 'discipline_name_key') {
+    data = {
+      error: `name is already in the database`
+    }
+  }else{
+    data = {
+      error: 'Unidentified error'
+    }
+  }
+  return data
 }
 
 module.exports = {

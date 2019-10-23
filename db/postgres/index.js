@@ -14,8 +14,6 @@ if (!connectionString) {
   connectionString = `postgres://${config.postgres.user}:${config.postgres.password}@localhost:${config.postgres.port}/${config.postgres.db}?sslmode=disable`
 }
 
-console.log('ConnectionString: ', connectionString)
-
 // Database Configuration
 const db = new TinyPg({
   connection_string: connectionString,

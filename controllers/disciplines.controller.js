@@ -74,7 +74,9 @@ async function createDiscipline (disciplineData) {
   }catch (error) {
     //Error handling
     debug('Error: ', error)
-    data = setError(error)
+
+    // Set error message
+    data = handleDatabaseValidations(error)
   }
   return data
 
@@ -90,18 +92,23 @@ async function updateDiscipline (discipline) {
   } catch (error) {
     // Error handling
     debug('Error: ', error)
-    data = setError(error)
+
+    // Set error message
+    data = handleDatabaseValidations(error)
   }
 
   return data
 
 }
 
-function setError(error) {
+function handleDatabaseValidations(error) {
+
   var data = null
+
+  // Check if the database constraint error matches the expected error
   if (error.queryContext.error.constraint == 'discipline_name_key') {
     data = {
-      error: 'name_key is already in the database'
+      error: `name is already in the database`
     }
   }else{
     data = {

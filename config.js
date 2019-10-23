@@ -20,7 +20,10 @@ const config = {
   salt: process.env.SALT || '',
   
   // Debug
-  debug: 'deportes-cp-api:'
+  debug: 'deportes-cp-api:',
+
+  // JWT
+  jwt_key: process.env.JWT_KEY || '123456789'
 }
 
 module.exports = config

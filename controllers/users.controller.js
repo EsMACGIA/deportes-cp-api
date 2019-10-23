@@ -80,11 +80,26 @@ async function createUser (userData) {
   }catch (error) {
     //Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
+    
+    if (error.queryContext.error.constraint == 'users_ci_key') {
+      data = {
+        error: 'ci_key is already in the database'
+      }
+    } else if(error.queryContext.error.constraint == 'users_email_key'){
+      data = {
+        error: 'email_key is already in the database'
+      }      
+    } else if(error.queryContext.error.constraint == 'users_type_check'){
+      data = {
+        error: 'type is not a value between 1 and 3'
+      }      
+    } else {
+      data = {
+        error: 'Unidentified error'
+      }      
     }
+  
   }
-
   return data
 
 }

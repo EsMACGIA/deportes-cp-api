@@ -15,7 +15,6 @@ module.exports = async (req, res) => {
   } else {
     res.status(201)
   }
-
   res.send(data)
 
 }

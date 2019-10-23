@@ -1,37 +1,36 @@
 'use strict'
 
+const config = require('../config')
 const nodemailer = require('nodemailer')
 
-function restorePasswordMail(user){
+async function sendEmail(recipients, subjects, body){
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'deportescp@gmail.com',
-      pass: 'zrqu#vCHf!qZb1Y3gk*$nYRAKQew4Tufkta5ad^^Y#gYlsOoRd'
+      user: config.email.account,
+      pass: config.email.password
     }
+  })
+
+  const mailOptions = {
+    from: config.email.account, // sender address
+    to: recipients, // list of receivers
+    subject: subjects, // Subject line
+    text: body // plain text body
+  }
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, function (err, info) {
+      if(err)
+        console.log(err)
+      else
+        console.log(info);
     })
 
-    const mailOptions = {
-      from: 'deportescp@gmail.com', // sender address
-      to: `${user}`, // list of receivers
-      subject: 'Password Restore', // Subject line
-      html: '<p> Hola </p>'// plain text body
-    }
-
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, function (err, info) {
-        if(err)
-          console.log(err)
-        else
-          console.log(info);
-     })
-
-    // TODO: Define the callback function
-
-    // TODO: Allow non secure apps to access gmail you can do this by going to your gmail settings
+  // TODO: Define the callback function
 }
 
 module.exports = {
-    restorePasswordMail
+    sendEmail
 }

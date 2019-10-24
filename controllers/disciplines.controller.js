@@ -3,8 +3,9 @@
 // Configuration 
 const config = require('../config')
 
-const debug = require('debug')(`${config.debug}controllers:users`)
+const debug = require('debug')(`${config.debug}controllers:disciplines`)
 const dbPostgres = require('../db/').postgres()
+const objFuncs = require('../utilities/objectFunctions')
 
 /**
  * Deletes a user in the database
@@ -62,29 +63,38 @@ async function createDiscipline (disciplineData) {
 
   var data = null 
 
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(disciplineData, "discipline")
+  if( data_body.error ){
+    return data_body
+  }
+
 
   try {
 
     data = await dbPostgres.sql('disciplines.createDiscipline', disciplineData)
-
-    debug('Date: ', data)
 
     data = data.rows
 
   }catch (error) {
     //Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
-    }
-  }
 
+    // Set error message
+    data = handleDatabaseValidations(error)
+  }
   return data
 
 }
 async function updateDiscipline (discipline) {
 
   var data = null
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(discipline, "discipline_update")
+  if( data_body.error ){
+    return data_body
+  }
 
   try {
     
@@ -93,13 +103,30 @@ async function updateDiscipline (discipline) {
   } catch (error) {
     // Error handling
     debug('Error: ', error)
-    data = {
-      error: 'Something is wrong!'
-    }
+
+    // Set error message
+    data = handleDatabaseValidations(error)
   }
 
   return data
 
+}
+
+function handleDatabaseValidations(error) {
+
+  var data = null
+
+  // Check if the database constraint error matches the expected error
+  if (error.queryContext.error.constraint == 'discipline_name_key') {
+    data = {
+      error: `name is already in the database`
+    }
+  }else{
+    data = {
+      error: 'Unidentified error'
+    }
+  }
+  return data
 }
 
 module.exports = {

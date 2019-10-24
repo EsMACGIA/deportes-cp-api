@@ -1,8 +1,7 @@
 -- Updates an user in the database
 UPDATE "deportes-cp".users
 SET name = :name,
+    lastname = :lastname,
     password = :password,
-    email = :email,
-    ci = :ci,
     type = :type
-WHERE id = :id
+WHERE email = :email

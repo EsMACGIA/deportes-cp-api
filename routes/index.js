@@ -7,10 +7,11 @@ const routes = require('express').Router()
 const root = require('./root')
 const users = require('./users')
 const disciplines = require('./disciplines')
+const auth = require('./auth')
 
 // Import Modules to Use
 routes.use('/', root)
 routes.use('/users', users)
 routes.use('/disciplines', disciplines)
-
+routes.use('/auth', auth)
 module.exports = routes

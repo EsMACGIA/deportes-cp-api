@@ -6,6 +6,10 @@ function compareObjects(obj1, obj2){
     for (var i in obj1) {
         if (!obj2.hasOwnProperty(i)){
             equal = false;
+        }else{
+            if((typeof obj1[i]) !== (typeof obj2[i])){
+                equal = false
+            }
         }
     }
     for (var k in obj2){

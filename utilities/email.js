@@ -10,11 +10,13 @@ const nodemailer = require('nodemailer')
 const debug = require('debug')(`${config.debug}utilities:email`)
 
 /**
+ * Sent an email to a list of recipients.
  * 
  * @date 2019-10-23
  * @param {Array<string>, string} recipients mails of all of the recipients of the email
  * @param {string} subject subject of the email
  * @param {string} body body of the email
+ * @returns {string} status of the email (sent or failed)
  */
 async function sendEmail(recipients, subject, body){
   let transporter = nodemailer.createTransport({

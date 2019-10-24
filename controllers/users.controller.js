@@ -114,14 +114,21 @@ async function updateUser (user) {
   }
 
   try {
-    user.password = hashing.createHash(user.password)
 
-    if (typeof(user.password) != 'string'){
-      throw new Error('Password is not a string')
+    if(user.password == ""){
+      data = await dbPostgres.sql('users.updateUserNoPassword', user)     
+    } else {
+      
+      user.password = hashing.createHash(user.password)
+
+      if (typeof(user.password) != 'string'){
+        throw new Error('Password is not a string')
+      }
+  
+      data = await dbPostgres.sql('users.updateUser', user)
+      data.code = 201
+  
     }
-
-    data = await dbPostgres.sql('users.updateUser', user)
-    data.code = 201
 
   } catch (error) {
     // Error handling

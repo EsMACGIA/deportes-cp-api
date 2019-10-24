@@ -151,39 +151,35 @@ function handleDatabaseValidations(error) {
   // Check if the database constraint error matches the expected error
   if (constraint == 'users_ci_key') {
     data = {
-      error: 'ci is already in the database'
+      error: 'Ya existe un usuario en el sistema con esta cédula'
     }
   } else if(constraint == 'users_email_key'){
     data = {
-      error: 'email is already in the database'
-    }      
-  } else if(constraint == 'users_type_check'){
-    data = {
-      error: 'type is not a value between 1 and 3'
+      error: 'Ya existe un usuario en el sistema con este email'
     }      
   } else if(constraint == 'users_ci_check'){
     data = {
-      error: 'ci is not a value between 1 and 999999999'
+      error: 'Cedula debe ser un valor entre 1 y 999999999'
     }
   } else if(constraint == 'Password is not a string'){
     data = {
-      error: constraint
+      error: 'La contraseña es invalida'
     }
   } else if(constraint == 'users_name_check'){
     data = {
-      error: 'User name is empty'
+      error: 'Nombre de usuario requerido'
     }
   } else if(constraint == 'users_lastname_check'){
     data = {
-      error: 'User last name is empty'
+      error: 'Apellido de usuario requerido'
     }
   } else if(constraint == 'email_type_check'){
     data = {
-      error: 'Email is invalid'
+      error: 'Email suministrado tiene formato invalido'
     }
   } else if(constraint == 'users_password_check'){
     data = {
-      error: 'Password is empty'
+      error: 'Contraseña requerida'
     }
   } else if(error.queryContext){
     data = {
@@ -195,8 +191,6 @@ function handleDatabaseValidations(error) {
     }      
   }
   data.code = 400
-
-  debug('CONSTRAINT', constraint)
 
   return data
 

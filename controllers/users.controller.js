@@ -159,7 +159,7 @@ function handleDatabaseValidations(error) {
     }      
   } else if(constraint == 'users_ci_check'){
     data = {
-      error: 'Cedula debe ser un valor entre 1 y 999999999'
+      error: 'Cédula debe ser un valor entre 1 y 999999999'
     }
   } else if(constraint == 'Password is not a string'){
     data = {

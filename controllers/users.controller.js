@@ -64,7 +64,8 @@ async function createUser (userData) {
 
   var data = null 
 
-  var data_body = objFuncs.checkUserBody(userData)
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(userData, "user")
   if( data_body.error ){
     return data_body
   }
@@ -106,7 +107,9 @@ async function createUser (userData) {
 async function updateUser (user) {
 
   var data = null
-  var data_body = objFuncs.checkUserBody(user)
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(user, "user")
   if( data_body.error ){
     return data_body
   }

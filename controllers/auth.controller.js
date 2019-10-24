@@ -12,7 +12,7 @@ const email = require('../utilities/email')
 const randomstring = require('randomstring')
 
 /**
- * Create user in the database
+ * Login user returning a token
  * @param {Object} userData data of the login user
  */
 async function loginUser (userData) {
@@ -76,13 +76,6 @@ async function loginUser (userData) {
 
 }
 
-
-
-
-const debug = require('debug')(`${config.debug}controllers:authentication`)
-const users = require('./users.controller')
-const email = require('../utilities/email')
-const randomstring = require('randomstring')
 
 /**
  * Function to restore password for a certain user

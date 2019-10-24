@@ -74,8 +74,6 @@ async function createDiscipline (disciplineData) {
 
     data = await dbPostgres.sql('disciplines.createDiscipline', disciplineData)
 
-    debug('Date: ', data)
-
     data = data.rows
 
   }catch (error) {

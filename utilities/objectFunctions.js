@@ -40,7 +40,6 @@ function compareTypeObject(obj1, type_obj){
     }
    
   }
-  console.log(model_body)
   
   var error = "Valid body"
   var answer = true;

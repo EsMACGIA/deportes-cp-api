@@ -7,12 +7,13 @@ module.exports = async (req, res) => {
 
   var userData = req.body
 
-  var data = await usersController.createUser(userData)
+  var data = await usersController.createUser(userData, res)
 
-  if (data.constructor === Array) {
-    res.status(200)
+  if (data.error) {
+    res.status(data.code)
+    delete data['code']
   } else {
-    res.status(500)
+    res.status(201)
   }
   res.send(data)
 

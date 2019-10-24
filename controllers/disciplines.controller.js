@@ -126,6 +126,9 @@ function handleDatabaseValidations(error) {
       error: 'Unidentified error'
     }
   }
+
+  data.code = 400
+
   return data
 }
 

@@ -172,14 +172,14 @@ function handleDatabaseValidations(error) {
 /**
  * Get the information of a given user
  * @date 2019-10-23
- * @param {number} id Id of the user to be consulted
+ * @param {nustring} email email of the user to be consulted
  */
-async function getUser(id) {
+async function getUser(email) {
 
   var data = null
 
   try {
-    data = await dbPostgres.sql('users.getUser', { id })
+    data = await dbPostgres.sql('users.getUser', { email })
 
     data = data.rows[0]
 

@@ -3,19 +3,28 @@
 // function that takes two objects and checks if both have exactly the same keys
 function compareObjects(obj1, obj2){
     var equal = true;
-    for (var i in obj1)
-        if (!obj2.hasOwnProperty(i))
+    for (var i in obj1) {
+        if (!obj2.hasOwnProperty(i)){
             equal = false;
-    for (var k in obj2)
-        if (!obj1.hasOwnProperty(k))
+        }
+    }
+    for (var k in obj2){
+        if (!obj1.hasOwnProperty(k)){
             equal = false;
-    
+        }
+    }
     return equal;
 }
 
-// function that checks if the format for an object is that of the kind of the 
-//argument type_obj(can be "user", "discipline_update" or "discipline"), 
-// if not return an array of the form [false, error], else [true, 'Valid body']
+/**
+ * Function that takes and obj and a string and depending on the string compares the objects
+ * to the respective model object, it returns an array of the form [boolean, string]
+ * where the boolean is false if they are not the same and the string is an error msg in 
+ * that case
+ * @param {Object} obj1 
+ * @param {String} type_obj 
+ * @date 2019-10-24
+ */
 function compareTypeObject(obj1, type_obj){
     
   // creating the respective model
@@ -38,7 +47,11 @@ function compareTypeObject(obj1, type_obj){
         id: 0,
         name: ''
     }
-   
+  }else if(type == "user_login"){
+      model_body = {
+        email = '',
+        password = ''
+      }
   }
   
   var error = "Valid body"

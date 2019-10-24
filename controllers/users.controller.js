@@ -196,8 +196,6 @@ function handleDatabaseValidations(error) {
   }
   data.code = 400
 
-  debug('CONSTRAINT', constraint)
-
   return data
 
 }

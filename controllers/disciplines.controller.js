@@ -8,7 +8,7 @@ const dbPostgres = require('../db/').postgres()
 const objFuncs = require('../utilities/objectFunctions')
 
 /**
- * Deletes a user in the database
+ * Deletes a discipline from the database
  */
 async function deleteDiscipline (id) {
 

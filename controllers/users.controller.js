@@ -9,7 +9,8 @@ const hashing = require('../utilities/hashing')
 const objFuncs = require('../utilities/objectFunctions')
 
 /**
- * Deletes a user in the database
+ * Deletes a user from the database
+ * @param {number} id User's id
  */
 async function deleteUser (id) {
 
@@ -41,8 +42,6 @@ async function getAllUsers () {
   try {
     data = await dbPostgres.sql('users.getAllUsers')
 
-    debug('Data: ', data)
-    
     data = data.rows
 
   } catch (error) {
@@ -58,7 +57,8 @@ async function getAllUsers () {
 }
 
 /**
- * Create user into the database
+ * Create user in the database
+ * @param {Object} userData data of the new user
  */
 async function createUser (userData) {
 
@@ -71,39 +71,28 @@ async function createUser (userData) {
   }
   
   try {
-    userData.password = await hashing.createHash(userData.password)
+    userData.password = hashing.createHash(userData.password)
     data = await dbPostgres.sql('users.createUser', userData)
-
-    debug('Date: ', data)
 
     data = data.rows
     
   }catch (error) {
+    
     //Error handling
     debug('Error: ', error)
     
-    if (error.queryContext.error.constraint == 'users_ci_key') {
-      data = {
-        error: 'ci_key is already in the database'
-      }
-    } else if(error.queryContext.error.constraint == 'users_email_key'){
-      data = {
-        error: 'email_key is already in the database'
-      }      
-    } else if(error.queryContext.error.constraint == 'users_type_check'){
-      data = {
-        error: 'type is not a value between 1 and 3'
-      }      
-    } else {
-      data = {
-        error: 'Unidentified error'
-      }      
+    // Get error's message
+    if (data == null){
+      data = handleDatabaseValidations(error)
     }
-  
   }
   return data
 
 }
+/**
+ * Function that updates an user's information
+ * @param {Object} user User that it's information is going to be updated
+ */
 async function updateUser (user) {
 
   var data = null
@@ -115,15 +104,65 @@ async function updateUser (user) {
   }
 
   try {
-    user.password = await hashing.createHash(user.password)
+    user.password = hashing.createHash(user.password)
+
+    if (typeof(user.password) != 'string'){
+      throw new Error('Password is not a string')
+    }
+
     data = await dbPostgres.sql('users.updateUser', user)
+    data.code = 201
 
   } catch (error) {
     // Error handling
     debug('Error: ', error)
+
+    
+    // Get error's message
+    data = handleDatabaseValidations(error)
+  }
+
+  return data
+
+}
+/**
+ * Function that check the error from the database and stablish error's message
+ * @param {Object} error database's error
+ */
+function handleDatabaseValidations(error) {
+  var data = null
+  var constraint = null
+  if(error.message){
+    constraint = error.message
+  } else {
+    constraint = error.queryContext.error.constraint
+  }
+
+  // Check if the database constraint error matches the expected error
+  if (constraint == 'users_ci_key') {
     data = {
-      error: 'Something is wrong!'
+      error: 'ci is already in the database'
     }
+  } else if(constraint == 'users_email_key'){
+    data = {
+      error: 'email is already in the database'
+    }      
+  } else if(constraint == 'users_type_check'){
+    data = {
+      error: 'type is not a value between 1 and 3'
+    }      
+  } else if(constraint == 'users_ci_check'){
+    data = {
+      error: 'ci is not a value between 1 and 999999999'
+    }
+  } else if(constraint == 'Password is not a string'){
+    data = {
+      error: constraint
+    }
+  } else {
+    data = {
+      error: 'Unidentified error'
+    }      
   }
 
   return data

@@ -6,12 +6,14 @@ const debug = require('debug')(`${config.debug}utilities:hashing`)
 
 /**
  * Creates a hash from a string
+ * @param {String} string String to be hashed
  */
 function createHash (string) {
 
   try {
     var salt = bcrypt.genSaltSync(parseInt(config.salt));
     var hash = bcrypt.hashSync(string, salt);
+
 
   } catch (error) {
     // Error handling
@@ -27,6 +29,8 @@ function createHash (string) {
 
 /**
  * Compares a string with a hash to verify them
+ * @param {String} string String to be verified
+ * @param {String} hash Hash to verify if it matches with the strings
  */
 function verifyHash (string, hash) {
 
@@ -47,4 +51,5 @@ function verifyHash (string, hash) {
 
 module.exports = {
   createHash,
-  verifyHash}
+  verifyHash
+}

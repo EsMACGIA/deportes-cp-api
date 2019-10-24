@@ -27,6 +27,8 @@ const config = {
     account: process.env.EMAIL_ACCOUNT,
     password: process.env.EMAIL_PASSWORD
   }
+  // JWT
+  jwt_key: process.env.JWT_KEY || '123456789'
 }
 
 module.exports = config

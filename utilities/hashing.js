@@ -11,8 +11,12 @@ const debug = require('debug')(`${config.debug}utilities:hashing`)
 function createHash (string) {
 
   try {
-    var salt = bcrypt.genSaltSync(parseInt(config.salt));
-    var hash = bcrypt.hashSync(string, salt);
+    if(string.length > 0){
+      var salt = bcrypt.genSaltSync(parseInt(config.salt));
+      var hash = bcrypt.hashSync(string, salt);
+    } else {
+      hash = string
+    }
 
 
   } catch (error) {

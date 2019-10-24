@@ -19,6 +19,7 @@ async function deleteUser (id) {
   try {
 
     data = await dbPostgres.sql('users.deleteUser', { id })
+    data.code = 201
 
   } catch (error) {
     // Error handling
@@ -26,6 +27,8 @@ async function deleteUser (id) {
     data = {
       error: 'Something is wrong!'
     }
+    error.code = 400
+
   }
 
   return data
@@ -43,6 +46,7 @@ async function getAllUsers () {
     data = await dbPostgres.sql('users.getAllUsers')
 
     data = data.rows
+    data.code = 201
 
   } catch (error) {
     // Error handling
@@ -50,6 +54,8 @@ async function getAllUsers () {
     data = {
       error: 'Something is wrong!'
     }
+    error.code = 400
+
   }
 
   return data
@@ -72,9 +78,15 @@ async function createUser (userData) {
   
   try {
     userData.password = hashing.createHash(userData.password)
+
+    if (typeof(userData.password) != 'string'){
+      throw new Error('Password is not a string')
+    }
+
     data = await dbPostgres.sql('users.createUser', userData)
 
     data = data.rows
+    data.code = 201
     
   }catch (error) {
     
@@ -82,9 +94,7 @@ async function createUser (userData) {
     debug('Error: ', error)
     
     // Get error's message
-    if (data == null){
-      data = handleDatabaseValidations(error)
-    }
+    data = handleDatabaseValidations(error)
   }
   return data
 
@@ -117,7 +127,6 @@ async function updateUser (user) {
     // Error handling
     debug('Error: ', error)
 
-    
     // Get error's message
     data = handleDatabaseValidations(error)
   }
@@ -132,12 +141,13 @@ async function updateUser (user) {
 function handleDatabaseValidations(error) {
   var data = null
   var constraint = null
-  if(error.message){
-    constraint = error.message
-  } else {
-    constraint = error.queryContext.error.constraint
-  }
 
+  if(error.queryContext){
+    constraint = error.queryContext.error.constraint
+  } else {
+    constraint = error.message
+  }
+  
   // Check if the database constraint error matches the expected error
   if (constraint == 'users_ci_key') {
     data = {
@@ -159,11 +169,34 @@ function handleDatabaseValidations(error) {
     data = {
       error: constraint
     }
-  } else {
+  } else if(constraint == 'users_name_check'){
+    data = {
+      error: 'User name is empty'
+    }
+  } else if(constraint == 'users_lastname_check'){
+    data = {
+      error: 'User last name is empty'
+    }
+  } else if(constraint == 'email_type_check'){
+    data = {
+      error: 'Email is invalid'
+    }
+  } else if(constraint == 'users_password_check'){
+    data = {
+      error: 'Password is empty'
+    }
+  } else if(error.queryContext){
+    data = {
+      error: error.message
+    }
+  } else{
     data = {
       error: 'Unidentified error'
     }      
   }
+  data.code = 400
+
+  debug('CONSTRAINT', constraint)
 
   return data
 
@@ -181,7 +214,13 @@ async function getUser(email) {
   try {
     data = await dbPostgres.sql('users.getUser', { email })
 
-    data = data.rows[0]
+    debug(data)
+    data.code = 400
+    
+    if (data.rows.length != 0){
+      data = data.rows[0]
+      data.code = 201
+    }
 
   } catch (error) {
     // Error handling

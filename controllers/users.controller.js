@@ -102,9 +102,36 @@ async function updateUser (user) {
 
 }
 
+/**
+ * Get the information of a given user
+ * @param {} id Id of the user to be consulted
+ */
+async function getUser(id) {
+
+  var data = null
+
+  try {
+    data = await dbPostgres.sql('users.getUser', { id })
+
+    debug('Data: ', data)
+    
+    data = data.rows[0]
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'Something is wrong!'
+    }
+  }
+
+  return data
+}
+
 module.exports = {
   getAllUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUser
 }

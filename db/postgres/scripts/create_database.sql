@@ -15,14 +15,13 @@ CREATE TABLE users (
     
       -- Constraints
       PRIMARY KEY (id),
-      CHECK (0 < CI AND CI < 999999999),
       CHECK (length(name) > 1),
       CHECK (length(password) > 1)
 );
 
 CREATE TABLE comission (
 
-     user_id integer NOT NULL UNIQUE REFERENCES users,
+     user_id integer NOT NULL UNIQUE REFERENCES users
 
 );
 
@@ -32,6 +31,7 @@ CREATE TABLE discipline (
      name varchar(128) NOT NULL UNIQUE,
 
      -- Constraints
+     PRIMARY KEY (id),
      CHECK (length(name) > 1)
 );
 

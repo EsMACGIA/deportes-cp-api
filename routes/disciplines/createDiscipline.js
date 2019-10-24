@@ -9,12 +9,12 @@ module.exports = async (req, res) => {
     
   var data = await disciplineController.createDiscipline(disciplineData)
 
-  if (data.constructor === Array) {
-    res.status(200)
+  if (data.error) {
+    res.status(data.code)
+    delete data['code']
   } else {
-    res.status(500)
+    res.status(201)
   }
-
   res.send(data)
 
 }

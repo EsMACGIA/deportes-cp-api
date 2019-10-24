@@ -5,6 +5,7 @@ const config = require('../config')
 
 const debug = require('debug')(`${config.debug}controllers:disciplines`)
 const dbPostgres = require('../db/').postgres()
+const objFuncs = require('../utilities/objectFunctions')
 
 /**
  * Deletes a user in the database
@@ -62,12 +63,16 @@ async function createDiscipline (disciplineData) {
 
   var data = null 
 
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(disciplineData, "discipline")
+  if( data_body.error ){
+    return data_body
+  }
+
 
   try {
 
     data = await dbPostgres.sql('disciplines.createDiscipline', disciplineData)
-
-    debug('Date: ', data)
 
     data = data.rows
 
@@ -84,6 +89,12 @@ async function createDiscipline (disciplineData) {
 async function updateDiscipline (discipline) {
 
   var data = null
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(discipline, "discipline_update")
+  if( data_body.error ){
+    return data_body
+  }
 
   try {
     

@@ -7,7 +7,7 @@ const debug = require('debug')(`${config.debug}controllers:users`)
 const dbPostgres = require('../db/').postgres()
 
 /**
- * Deletes a user in the database
+ * Deletes a discipline from the database
  */
 async function deleteDiscipline (id) {
 

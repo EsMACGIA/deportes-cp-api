@@ -1,7 +1,7 @@
 'use strict'
 
 // Controllers
-const loginController = require('../../controllers/login.controller')
+const loginController = require('../../controllers/auth.controller')
 
 module.exports = async (req, res) => {
 

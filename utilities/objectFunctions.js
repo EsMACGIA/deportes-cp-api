@@ -47,10 +47,11 @@ function compareTypeObject(obj1, type_obj){
         id: 0,
         name: ''
     }
-  }else if(type == "user_login"){
+  }else if(type_obj == "user_login"){
+     
       model_body = {
-        email = '',
-        password = ''
+        email: '',
+        password: ''
       }
   }
   

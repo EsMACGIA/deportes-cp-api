@@ -76,9 +76,5 @@ async function loginUser (userData) {
 
 
 module.exports = {
-  getAllUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-  getUser
+  loginUser
 }

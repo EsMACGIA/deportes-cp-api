@@ -10,10 +10,12 @@ const express = require('express')
 
 // Express.js Configuration
 const app = express()
+const cors = require('cors')
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cors())
 
 // Routing 
 const routes = require('./routes')

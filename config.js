@@ -24,9 +24,10 @@ const config = {
 
   // Email
   email: {
-    account: process.env.EMAIL_ACCOUNT,
-    password: process.env.EMAIL_PASSWORD
+    account: process.env.EMAIL_ACCOUNT || 'test@deportescp.com',
+    password: process.env.EMAIL_PASSWORD || '12345678'
   },
+  
   // JWT
   jwt_key: process.env.JWT_KEY || '123456789'
 }

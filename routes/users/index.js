@@ -8,11 +8,13 @@ const getAllUsers = require('./getAllUsers')
 const createUser = require('./createUser')
 const updateUser = require('./updateUser')
 const deleteUser = require('./deleteUser')
+const getUser = require('./getUser')
 
 // Endpoints
 users.get('/', getAllUsers)
 users.put('/', updateUser)
 users.delete('/:id', deleteUser)
 users.post('/', createUser)
+users.get('/:id', getUser)
 
 module.exports = users

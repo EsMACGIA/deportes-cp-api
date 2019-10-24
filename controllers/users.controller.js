@@ -64,7 +64,8 @@ async function createUser (userData) {
 
   var data = null 
 
-  var data_body = objFuncs.checkUserBody(userData)
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(userData, "user")
   if( data_body.error ){
     return data_body
   }
@@ -95,7 +96,9 @@ async function createUser (userData) {
 async function updateUser (user) {
 
   var data = null
-  var data_body = objFuncs.checkUserBody(user)
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(user, "user")
   if( data_body.error ){
     return data_body
   }
@@ -166,9 +169,35 @@ function handleDatabaseValidations(error) {
 
 }
 
+/**
+ * Get the information of a given user
+ * @date 2019-10-23
+ * @param {number} id Id of the user to be consulted
+ */
+async function getUser(id) {
+
+  var data = null
+
+  try {
+    data = await dbPostgres.sql('users.getUser', { id })
+
+    data = data.rows[0]
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'Something is wrong!'
+    }
+  }
+
+  return data
+}
+
 module.exports = {
   getAllUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUser
 }

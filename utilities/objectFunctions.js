@@ -13,21 +13,35 @@ function compareObjects(obj1, obj2){
     return equal;
 }
 
-// function that checks if the format for an object is that of a user, 
-// if not return an array of the form [false, error], else [true, 'Valid user body']
-function compareUserObject(obj1){
+// function that checks if the format for an object is that of the kind of the 
+//argument type_obj(can be "user", "discipline_update" or "discipline"), 
+// if not return an array of the form [false, error], else [true, 'Valid body']
+function compareTypeObject(obj1, type_obj){
     
-  // model of object for a user to compare
-  var model_body = {
-    email: '',
-    name: '',
-    lastname: '',
-    password: '',
-    ci: 0,
-    type: 0
+  // creating the respective model
+  var model_body = {}
+  if( type_obj == "user"){
+    model_body = {
+        email: '',
+        name: '',
+        lastname: '',
+        password: '',
+        ci: 0,
+        type: 0
+      }
+  }else if(type_obj =="discipline"){
+    model_body = {
+        name: ''
+    }
+  }else if(type_obj == "discipline_update"){
+    model_body = {
+        id: 0,
+        name: ''
+    }
+   
   }
-
-  var error = "Valid user body"
+  
+  var error = "Valid body"
   var answer = true;
   var rightKeys = compareObjects(obj1, model_body)
 
@@ -42,11 +56,14 @@ function compareUserObject(obj1){
 
 }
 
-// function that takes a user body and checks if is correct returning a 
+// function that takes a  body and a type (a string 
+// that represents the kind of object to compare to, 
+// can be "user" or "discipline"
+//) and checks if is correct returning a 
 // data object, if is not correct the data object will have the 'error' key
-function checkUserBody(body){
+function checkBody(body, type){
 
-    var rightBody = compareUserObject(body)
+    var rightBody = compareTypeObject(body, type)
     var data = {}
     // error in the body
     if(!rightBody[0]){
@@ -60,6 +77,6 @@ function checkUserBody(body){
 
 module.exports = {
     compareObjects,
-    compareUserObject,
-    checkUserBody
+    compareTypeObject,
+    checkBody
 }

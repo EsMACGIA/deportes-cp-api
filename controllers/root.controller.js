@@ -27,7 +27,7 @@ async function rootFunction () {
     }
   } catch (err) {
     // Error handling
-    debug('Error: ', err)
+    console.log('Error: ', err)
     data = null
   }
 

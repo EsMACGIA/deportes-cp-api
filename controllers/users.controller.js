@@ -104,7 +104,8 @@ async function updateUser (user) {
 
 /**
  * Get the information of a given user
- * @param {} id Id of the user to be consulted
+ * @date 2019-10-23
+ * @param {number} id Id of the user to be consulted
  */
 async function getUser(id) {
 
@@ -113,8 +114,6 @@ async function getUser(id) {
   try {
     data = await dbPostgres.sql('users.getUser', { id })
 
-    debug('Data: ', data)
-    
     data = data.rows[0]
 
   } catch (error) {

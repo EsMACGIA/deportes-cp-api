@@ -80,24 +80,34 @@ async function loginUser (userData) {
 /**
  * Function to restore password for a certain user
  * @date 2019-10-24
- * @param {any} account
+ * @param {string} account
  * @returns {any}
  */
 async function restorePassword(account){
 
   var data = null
-  user = users.getUser(account)  
+  var user = await users.getUser(account)
+
   if(user.name){
-    user.password = randomstring.generate(8)
+
+    delete(user.id)
+    delete(user.code)
+
+    var passwd = randomstring.generate(8)
+    user.password = passwd
     data = users.updateUser(user)
     data.code = 201
+
     email.sendEmail(account, 
     'Recuperacion de contraseña', 
-    `Estimad@ ${user.name} ${user.lastname}, su contraseña temporal es ${user.password}.\nAtentamente, Sistema de Deportes CP`)
+    `Estimad@ ${user.name} ${user.lastname}, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
+
   }else{
+
     data = {
       error: 'User not in database'
     }   
+    
   }
   return data
 }

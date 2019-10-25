@@ -180,39 +180,35 @@ function handleDatabaseValidations(error) {
   // Check if the database constraint error matches the expected error
   if (constraint == 'trainer_ci_key') {
     data = {
-      error: 'ci is already in the database'
+      error: 'Ya existe un entrenador en el sistema con esa cédula'
     }
-  } else if(constraint == 'trainer_email_key'){
+  } else if(constraint == 'users_email_key'){
     data = {
-      error: 'email is already in the database'
-    }      
-  } else if(constraint == 'trainer_type_check'){
-    data = {
-      error: 'type is not a value between 1 and 3'
+      error: 'Ya existe un entrenador en el sistema con ese email'
     }      
   } else if(constraint == 'trainer_ci_check'){
     data = {
-      error: 'ci is not a value between 1 and 999999999'
+      error: 'Cédula debe ser un valor entre 1 y 999999999 '
     }
   } else if(constraint == 'Password is not a string'){
     data = {
-      error: constraint
+      error: 'La contraseña es invalida'
     }
-  } else if(constraint == 'trainer_name_check'){
+  } else if(constraint == 'users_name_check'){
     data = {
-      error: 'Trainer name is empty'
+      error: 'Nombre de entrenador requerido'
     }
   } else if(constraint == 'trainer_lastname_check'){
     data = {
-      error: 'Trainer last name is empty'
+      error: 'Apellido de entrenador requerido'
     }
   } else if(constraint == 'email_type_check'){
     data = {
-      error: 'Email is invalid'
+      error: 'Email suministrado tiene un formato invalido'
     }
-  } else if(constraint == 'trainer_password_check'){
+  } else if(constraint == 'users_password_check'){
     data = {
-      error: 'Password is empty'
+      error: 'Contraseña requerida'
     }
   } else if(error.queryContext){
     data = {

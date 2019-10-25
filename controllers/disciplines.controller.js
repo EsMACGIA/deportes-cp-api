@@ -22,7 +22,7 @@ async function deleteDiscipline (id) {
     // Error handling
     debug('Error: ', error)
     data = {
-      error: 'Something is wrong!'
+      error: 'No se pudo eliminar la disciplina'
     }
   }
 
@@ -48,7 +48,7 @@ async function getAllDisciplines () {
     // Error handling
     debug('Error: ', error)
     data = {
-      error: 'Something is wrong!'
+      error: 'No se pudo obtener la información de la base de datos'
     }
   }
 

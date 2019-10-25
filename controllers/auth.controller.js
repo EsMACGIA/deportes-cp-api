@@ -34,7 +34,7 @@ async function loginUser (userData) {
 
     if( data.rows.length < 1 ){
         data = {
-            error: "Not such user",
+            error: "Los datos proporcionados son inválidos",
             code: 404
         }
         return data
@@ -44,7 +44,7 @@ async function loginUser (userData) {
     //checking if the password is correct
     if (!hashing.verifyHash(password, user.password)){
         data = {
-            error: "Wrong password",
+            error: "Los datos proporcionados son inválidos",
             code: 401
         }
         return data

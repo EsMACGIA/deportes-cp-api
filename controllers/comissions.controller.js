@@ -24,7 +24,7 @@ async function deleteComission (id) {
     // Error handling
     debug('Error: ', error)
     data = {
-      error: 'Something is wrong!'
+      error: 'No se pudo eliminar la comisión'
     }
     error.code = 400
 
@@ -50,7 +50,7 @@ async function getAllComissions () {
     // Error handling
     debug('Error: ', error)
     data = {
-      error: 'Something is wrong!'
+      error: 'No se pudo obtener la información de la base de datos'
     }
     error.code = 400
 
@@ -126,11 +126,12 @@ async function updateComission (comission) {
       
     } else {
       
-      comission.password = hashing.createHash(comission.password)
-
       if (typeof(comission.password) != 'string'){
         throw new Error('Password is not a string')
       }
+
+      comission.password = hashing.createHash(comission.password)
+
 
       data = await dbPostgres.sql('comissions.updateComission', comission)
 
@@ -216,7 +217,7 @@ async function getComission(email) {
     // Error handling
     debug('Error: ', error)
     data = {
-      error: 'Something is wrong!'
+      error: 'No se pudo obtener la información de la base de datos'
     }
     data.code = 400
   }

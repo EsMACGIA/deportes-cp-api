@@ -10,6 +10,7 @@ const jwt = require('../utilities/jwt')
 const users = require('./users.controller')
 const email = require('../utilities/email')
 const randomstring = require('randomstring')
+const trainersController = require('./trainers.controller')
 
 /**
  * Login user returning a token
@@ -33,7 +34,7 @@ async function loginUser (userData) {
 
     if( data.rows.length < 1 ){
         data = {
-            error: "Not such user",
+            error: "Los datos proporcionados son inválidos",
             code: 404
         }
         return data
@@ -43,11 +44,13 @@ async function loginUser (userData) {
     //checking if the password is correct
     if (!hashing.verifyHash(password, user.password)){
         data = {
-            error: "Wrong password",
+            error: "Los datos proporcionados son inválidos",
             code: 401
         }
         return data
     }
+
+    var trainer = trainersController.getTrainer(email);
 
     //case where all data was valid
     var jwtObj = {
@@ -55,11 +58,17 @@ async function loginUser (userData) {
     }
     
     var token = jwt.signToken(jwtObj);
-
+    
     data = {
-        token: token
+      token: token
     }
 
+    if (trainer.ci) {
+      data.type = 3
+    } else {
+      data.type = 2
+    }
+    
     return data
 
   }catch (error) {
@@ -86,29 +95,30 @@ async function loginUser (userData) {
 async function restorePassword(account){
 
   var data = null
+
   var user = await users.getUser(account)
+
 
   if(user.name){
 
     delete(user.id)
-    delete(user.code)
-
     var passwd = randomstring.generate(8)
     user.password = passwd
-    data = users.updateUser(user)
-    data.code = 201
+    data = await users.updateUser(user)
 
     email.sendEmail(account, 
     'Recuperacion de contraseña', 
-    `Estimad@ ${user.name} ${user.lastname}, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
+    `Estimad@ ${user.name}, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
 
-  }else{
+    }else{
 
-    data = {
-      error: 'User not in database'
-    }   
-    
-  }
+      data = {
+        error: "El usuario no existe en la base de datos",
+        code : "400"
+      }   
+  
+    }
+
   return data
 }
 

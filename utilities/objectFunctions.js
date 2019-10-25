@@ -61,6 +61,12 @@ function compareTypeObject(obj1, type_obj){
         email: '',
         password: ''
       }
+  }else if(type_obj == "comission"){
+    model_body = {
+      email: '',
+      password: '',
+      name: ''
+    }
   }
   
   var error = "Valid body"

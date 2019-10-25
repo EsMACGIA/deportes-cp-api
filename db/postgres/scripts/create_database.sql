@@ -39,7 +39,7 @@ CREATE TABLE trainer (
 
      lastname varchar(30) NOT NULL ,
      user_id integer NOT NULL UNIQUE REFERENCES users ON DELETE CASCADE,
-     discipline_id integer NOT NULL REFERENCES discipline,
+     discipline_id integer NOT NULL REFERENCES discipline ON DELETE CASCADE,
      CI integer NOT NULL UNIQUE,
 
      -- Constraints

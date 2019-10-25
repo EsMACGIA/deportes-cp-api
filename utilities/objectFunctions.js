@@ -1,21 +1,38 @@
 'use strict'
 
-// function that takes two objects and checks if both have exactly the same keys
+/**
+ * function that compares if the keys and keys' types of two objects are excactly the same
+ * @param {Object} obj1 first object to compare
+ * @param {Object} obj2 second object to compare
+ */
 function compareObjects(obj1, obj2){
     var equal = true;
-    for (var i in obj1)
-        if (!obj2.hasOwnProperty(i))
+    for (var i in obj1) {
+        if (!obj2.hasOwnProperty(i)){
             equal = false;
-    for (var k in obj2)
-        if (!obj1.hasOwnProperty(k))
+        }else{
+            if((typeof obj1[i]) !== (typeof obj2[i])){
+                equal = false
+            }
+        }
+    }
+    for (var k in obj2){
+        if (!obj1.hasOwnProperty(k)){
             equal = false;
-    
+        }
+    }
     return equal;
 }
 
-// function that checks if the format for an object is that of the kind of the 
-//argument type_obj(can be "user", "discipline_update" or "discipline"), 
-// if not return an array of the form [false, error], else [true, 'Valid body']
+/**
+ * Function that takes and obj and a string and depending on the string compares the objects
+ * to the respective model object, it returns an array of the form [boolean, string]
+ * where the boolean is false if they are not the same and the string is an error msg in 
+ * that case
+ * @param {Object} obj1 
+ * @param {String} type_obj 
+ * @date 2019-10-24
+ */
 function compareTypeObject(obj1, type_obj){
     
   // creating the respective model
@@ -38,7 +55,12 @@ function compareTypeObject(obj1, type_obj){
         id: 0,
         name: ''
     }
-   
+  }else if(type_obj == "user_login"){
+     
+      model_body = {
+        email: '',
+        password: ''
+      }
   }
   
   var error = "Valid body"
@@ -56,11 +78,13 @@ function compareTypeObject(obj1, type_obj){
 
 }
 
-// function that takes a  body and a type (a string 
-// that represents the kind of object to compare to, 
-// can be "user" or "discipline"
-//) and checks if is correct returning a 
-// data object, if is not correct the data object will have the 'error' key
+/**
+ * function that returns data with error string and code of error depending
+ * on the body passed and the type u want to compare it with
+ * @param {Object} body body to compare
+ * @param {String} type type of the body u want to compare it with. Example "user"
+ * for more informaction about valid types go to compareTypeObjects
+ */
 function checkBody(body, type){
 
     var rightBody = compareTypeObject(body, type)

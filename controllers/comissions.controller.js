@@ -3,16 +3,16 @@
 // Configuration 
 const config = require('../config')
 
-const debug = require('debug')(`${config.debug}controllers:users`)
+const debug = require('debug')(`${config.debug}controllers:comissions`)
 const dbPostgres = require('../db/').postgres()
 const hashing = require('../utilities/hashing')
 const objFuncs = require('../utilities/objectFunctions')
 
 /**
- * Deletes a user from the database
- * @param {number} id User's id
+ * Deletes a commision from the database
+ * @param {number} id Comission's id
  */
-async function deleteUser (id) {
+async function deleteComission (id) {
 
   var data = null
 
@@ -35,14 +35,14 @@ async function deleteUser (id) {
 }
 
 /**
- * Gets all user in the database
+ * Gets all comissions in the database
  */
-async function getAllUsers () {
+async function getAllComissions () {
 
   var data = null
 
   try {
-    data = await dbPostgres.sql('users.getAllUsers')
+    data = await dbPostgres.sql('comissions.getAllComissions')
 
     data = data.rows
 
@@ -61,29 +61,37 @@ async function getAllUsers () {
 }
 
 /**
- * Create user in the database
- * @param {Object} userData data of the new user
+ * Create comission in the database
+ * @param {Object} comissionData data of the new comission
  */
-async function createUser (userData) {
+async function createComission (comissionData) {
 
   var data = null 
 
   //checking if object is valid
-  var data_body = objFuncs.checkBody(userData, "user")
+  var data_body = objFuncs.checkBody(comissionData, "comission")
   if( data_body.error ){
     return data_body
   }
   
   try {
-    userData.password = hashing.createHash(userData.password)
+    comissionData.password = hashing.createHash(comissionData.password)
 
-    if (typeof(userData.password) != 'string'){
-      throw new Error('Password is not a string')
-    }
+    
+    await dbPostgres.transaction(async transaction_db => { // BEGIN
 
-    data = await dbPostgres.sql('users.createUser', userData)
+        const create_result = await transaction_db.sql('users.createUser', comissionData)
+      
+        const user = create_result.rows[0]
+        comissionData.user_id = user.id
+      
+        await transaction_db.sql('comissions.createComission', comissionData)
+      
+        return user
+     })
 
-    data = data.rows
+    data = comissionData
+    data.action = "CREATED"
     
   }catch (error) {
     
@@ -97,28 +105,36 @@ async function createUser (userData) {
 
 }
 /**
- * Function that updates an user's information
- * @param {Object} user User that it's information is going to be updated
+ * Function that updates a comission's information
+ * @param {Object} comission Comission that it's information is going to be updated
  */
-async function updateUser (user) {
+async function updateComission (comission) {
 
   var data = null
 
   //checking if object is valid
-  var data_body = objFuncs.checkBody(user, "user")
+  var data_body = objFuncs.checkBody(comission, "comission")
   if( data_body.error ){
     return data_body
   }
 
   try {
-    user.password = hashing.createHash(user.password)
 
-    if (typeof(user.password) != 'string'){
-      throw new Error('Password is not a string')
+    if(comission.password == ""){
+
+      data = await dbPostgres.sql('comissions.updateComissionNoPassword', comission)    
+      
+    } else {
+      
+      comission.password = hashing.createHash(comission.password)
+
+      if (typeof(comission.password) != 'string'){
+        throw new Error('Password is not a string')
+      }
+
+      data = await dbPostgres.sql('comissions.updateComission', comission)
+
     }
-
-    data = await dbPostgres.sql('users.updateUser', user)
-
   } catch (error) {
     // Error handling
     debug('Error: ', error)
@@ -145,35 +161,23 @@ function handleDatabaseValidations(error) {
   }
   
   // Check if the database constraint error matches the expected error
-  if (constraint == 'users_ci_key') {
+  if(constraint == 'users_email_key'){
     data = {
-      error: 'Ya existe un usuario en el sistema con esta cédula'
-    }
-  } else if(constraint == 'users_email_key'){
-    data = {
-      error: 'Ya existe un usuario en el sistema con este email'
+      error: 'Ya existe una comisión en el sistema con este email'
     }      
-  } else if(constraint == 'users_ci_check'){
-    data = {
-      error: 'Cédula debe ser un valor entre 1 y 999999999'
-    }
   } else if(constraint == 'Password is not a string'){
     data = {
       error: 'La contraseña es invalida'
     }
-  } else if(constraint == 'users_name_check'){
+  } else if(constraint == 'comissions_name_check'){
     data = {
-      error: 'Nombre de usuario requerido'
+      error: 'Nombre de comisión requerida'
     }
-  } else if(constraint == 'users_lastname_check'){
+  }else if(constraint == 'email_type_check'){
     data = {
-      error: 'Apellido de usuario requerido'
+      error: 'Email suministrado tiene formato inválido'
     }
-  } else if(constraint == 'email_type_check'){
-    data = {
-      error: 'Email suministrado tiene formato invalido'
-    }
-  } else if(constraint == 'users_password_check'){
+  } else if(constraint == 'comissions_password_check'){
     data = {
       error: 'Contraseña requerida'
     }
@@ -193,19 +197,17 @@ function handleDatabaseValidations(error) {
 }
 
 /**
- * Get the information of a given user
+ * Get the information of a given comission
  * @date 2019-10-23
- * @param {nustring} email email of the user to be consulted
+ * @param {nustring} email email of the comission to be consulted
  */
-async function getUser(email) {
+async function getComission(email) {
 
   var data = null
 
   try {
-    data = await dbPostgres.sql('users.getUser', { email })
+    data = await dbPostgres.sql('comissions.getComission', { email })
 
-    debug(data)
-    
     if (data.rows.length != 0){
       data = data.rows[0]
     }
@@ -223,9 +225,9 @@ async function getUser(email) {
 }
 
 module.exports = {
-  getAllUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-  getUser
+  getAllComissions,
+  createComission,
+  updateComission,
+  deleteComission,
+  getComission
 }

@@ -61,6 +61,12 @@ function compareTypeObject(obj1, type_obj){
         email: '',
         password: ''
       }
+  }else if(type_obj == "comission"){
+    model_body = {
+      email: '',
+      password: '',
+      name: ''
+    }
   }else if(type_obj == "trainer"){
     model_body = {
         email: '',

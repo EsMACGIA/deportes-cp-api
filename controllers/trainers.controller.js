@@ -24,7 +24,7 @@ async function deleteTrainer (id) {
     // Error handling
     
     data = {
-      error: 'Could not delete trainer' 
+      error: 'No se pudo eliminar al entrenador' 
     }
     error.code = 400
 
@@ -51,7 +51,7 @@ async function getAllTrainers () {
     // Error handling
     debug('Error: ', error)
     data = {
-      error: 'Something is wrong!'
+      error: 'No se pudo obtener la información de la base de datos'
     }
     error.code = 400
 
@@ -249,7 +249,7 @@ async function getTrainer(email) {
     // Error handling
     debug('Error: ', error)
     data = {
-      error: 'Something is wrong!'
+      error: 'No se pudo obtener la información de la base de datos'
     }
     data.code = 400
   }

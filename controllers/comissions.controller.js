@@ -126,11 +126,12 @@ async function updateComission (comission) {
       
     } else {
       
-      comission.password = hashing.createHash(comission.password)
-
       if (typeof(comission.password) != 'string'){
         throw new Error('Password is not a string')
       }
+
+      comission.password = hashing.createHash(comission.password)
+
 
       data = await dbPostgres.sql('comissions.updateComission', comission)
 

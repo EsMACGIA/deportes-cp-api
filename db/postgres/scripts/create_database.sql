@@ -21,7 +21,7 @@ CREATE TABLE users (
 
 CREATE TABLE comission (
 
-     user_id integer NOT NULL UNIQUE REFERENCES users
+     user_id integer NOT NULL UNIQUE REFERENCES users ON DELETE CASCADE
 
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE discipline (
 CREATE TABLE trainer (
 
      lastname varchar(30) NOT NULL ,
-     user_id integer NOT NULL UNIQUE REFERENCES users,
+     user_id integer NOT NULL UNIQUE REFERENCES users ON DELETE CASCADE,
      discipline_id integer NOT NULL REFERENCES discipline,
      CI integer NOT NULL UNIQUE,
 

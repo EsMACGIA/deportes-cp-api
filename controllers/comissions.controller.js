@@ -169,7 +169,7 @@ function handleDatabaseValidations(error) {
     data = {
       error: 'La contraseña es invalida'
     }
-  } else if(constraint == 'comissions_name_check'){
+  } else if(constraint == 'users_name_check'){
     data = {
       error: 'Nombre de comisión requerida'
     }
@@ -177,7 +177,7 @@ function handleDatabaseValidations(error) {
     data = {
       error: 'Email suministrado tiene formato inválido'
     }
-  } else if(constraint == 'comissions_password_check'){
+  } else if(constraint == 'users_password_check'){
     data = {
       error: 'Contraseña requerida'
     }

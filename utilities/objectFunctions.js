@@ -67,6 +67,25 @@ function compareTypeObject(obj1, type_obj){
       password: '',
       name: ''
     }
+  }else if(type_obj == "trainer"){
+    model_body = {
+        email: '',
+        name: '',
+        discipline_id: 0,
+        lastname: '',
+        password: '',
+        ci: 0,
+      }
+  }else if(type_obj == "trainer_update"){
+    model_body = {
+        id: 0,
+        email: '',
+        name: '',
+        discipline_id: 0,
+        lastname: '',
+        password: '',
+        ci: 0,
+      }
   }
   
   var error = "Valid body"

@@ -19,6 +19,7 @@ async function deleteUser (id) {
   try {
 
     data = await dbPostgres.sql('users.deleteUser', { id })
+    data.code = 201
 
   } catch (error) {
     // Error handling
@@ -45,6 +46,7 @@ async function getAllUsers () {
     data = await dbPostgres.sql('users.getAllUsers')
 
     data = data.rows
+    data.code = 201
 
   } catch (error) {
     // Error handling
@@ -84,6 +86,7 @@ async function createUser (userData) {
     data = await dbPostgres.sql('users.createUser', userData)
 
     data = data.rows
+    data.code = 201
     
   }catch (error) {
     
@@ -118,6 +121,7 @@ async function updateUser (user) {
     }
 
     data = await dbPostgres.sql('users.updateUser', user)
+    data.code = 201
 
   } catch (error) {
     // Error handling
@@ -147,35 +151,39 @@ function handleDatabaseValidations(error) {
   // Check if the database constraint error matches the expected error
   if (constraint == 'users_ci_key') {
     data = {
-      error: 'Ya existe un usuario en el sistema con esta cédula'
+      error: 'ci is already in the database'
     }
   } else if(constraint == 'users_email_key'){
     data = {
-      error: 'Ya existe un usuario en el sistema con este email'
+      error: 'email is already in the database'
+    }      
+  } else if(constraint == 'users_type_check'){
+    data = {
+      error: 'type is not a value between 1 and 3'
     }      
   } else if(constraint == 'users_ci_check'){
     data = {
-      error: 'Cédula debe ser un valor entre 1 y 999999999'
+      error: 'ci is not a value between 1 and 999999999'
     }
   } else if(constraint == 'Password is not a string'){
     data = {
-      error: 'La contraseña es invalida'
+      error: constraint
     }
   } else if(constraint == 'users_name_check'){
     data = {
-      error: 'Nombre de usuario requerido'
+      error: 'User name is empty'
     }
   } else if(constraint == 'users_lastname_check'){
     data = {
-      error: 'Apellido de usuario requerido'
+      error: 'User last name is empty'
     }
   } else if(constraint == 'email_type_check'){
     data = {
-      error: 'Email suministrado tiene formato invalido'
+      error: 'Email is invalid'
     }
   } else if(constraint == 'users_password_check'){
     data = {
-      error: 'Contraseña requerida'
+      error: 'Password is empty'
     }
   } else if(error.queryContext){
     data = {
@@ -205,18 +213,19 @@ async function getUser(email) {
     data = await dbPostgres.sql('users.getUser', { email })
 
     debug(data)
+    data.code = 400
     
     if (data.rows.length != 0){
       data = data.rows[0]
+      data.code = 201
     }
-    
+
   } catch (error) {
     // Error handling
     debug('Error: ', error)
     data = {
       error: 'Something is wrong!'
     }
-    data.code = 400
   }
 
   return data

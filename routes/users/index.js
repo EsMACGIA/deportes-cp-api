@@ -15,6 +15,6 @@ users.get('/', getAllUsers)
 users.put('/', updateUser)
 users.delete('/:id', deleteUser)
 users.post('/', createUser)
-users.get('/:email', getUser)
+users.get('/:id', getUser)
 
 module.exports = users

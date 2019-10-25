@@ -86,29 +86,30 @@ async function loginUser (userData) {
 async function restorePassword(account){
 
   var data = null
+
   var user = await users.getUser(account)
+
 
   if(user.name){
 
     delete(user.id)
-    delete(user.code)
-
     var passwd = randomstring.generate(8)
     user.password = passwd
-    data = users.updateUser(user)
-    data.code = 201
+    data = await users.updateUser(user)
 
     email.sendEmail(account, 
     'Recuperacion de contraseña', 
-    `Estimad@ ${user.name} ${user.lastname}, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
+    `Estimad@ ${user.name}, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
 
-  }else{
+    }else{
 
-    data = {
-      error: 'User not in database'
-    }   
-    
-  }
+      data = {
+        error: "El usuario no existe en la base de datos",
+        code : "400"
+      }   
+  
+    }
+
   return data
 }
 

@@ -41,10 +41,7 @@ function compareTypeObject(obj1, type_obj){
     model_body = {
         email: '',
         name: '',
-        lastname: '',
-        password: '',
-        ci: 0,
-        type: 0
+        password: ''
       }
   }else if(type_obj =="discipline"){
     model_body = {

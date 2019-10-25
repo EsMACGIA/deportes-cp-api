@@ -10,6 +10,7 @@ const jwt = require('../utilities/jwt')
 const users = require('./users.controller')
 const email = require('../utilities/email')
 const randomstring = require('randomstring')
+const trainersController = require('./trainers.controller')
 
 /**
  * Login user returning a token
@@ -49,17 +50,25 @@ async function loginUser (userData) {
         return data
     }
 
+    var trainer = trainersController.getTrainer(email);
+
     //case where all data was valid
     var jwtObj = {
         id: user.id
     }
     
     var token = jwt.signToken(jwtObj);
-
+    
     data = {
-        token: token
+      token: token
     }
 
+    if (trainer.ci) {
+      data.type = 3
+    } else {
+      data.type = 2
+    }
+    
     return data
 
   }catch (error) {

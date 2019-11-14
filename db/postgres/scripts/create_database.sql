@@ -7,7 +7,7 @@ CREATE DOMAIN "email_type" AS
   VARCHAR NOT NULL CHECK (value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_\`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' );
 
 CREATE DOMAIN "document" AS
-  VARCHAR NOT NULL CHECK (value ~ '^[VEPGJ]\-[1-9]\d{0,8}$');
+  VARCHAR CHECK (value ~ '^[VEPGJ]\-[1-9]\d{0,8}$');
 
 CREATE DOMAIN "gender" AS
   VARCHAR NOT NULL CHECK (value ~ '^[MF]$');

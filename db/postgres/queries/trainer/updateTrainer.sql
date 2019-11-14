@@ -1,4 +1,4 @@
--- Updates an trainer in the database
+-- Updates a trainer in the database
 UPDATE "deportes-cp".trainer
 SET name = :name,
     lastname = :lastname

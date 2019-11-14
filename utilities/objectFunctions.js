@@ -84,6 +84,25 @@ function compareTypeObject(obj1, type_obj){
         lastname: '',
         password: ''
       }
+  }else if(type_obj == "athlete"){
+    model_body = {
+      name : '',
+      lastname : '',
+      sex : '',
+      birthday : '',
+      ci : '',
+      stock_number : 0
+    }
+  }else if(type_obj == "athlete_update"){
+    model_body = {
+      id : 0,
+      name : '',
+      lastname : '',
+      sex : '',
+      birthday : '',
+      ci : '',
+      stock_number : 0
+    }
   }else if(type_obj == "class"){
       model_body = {
           description : '',
@@ -102,13 +121,12 @@ function compareTypeObject(obj1, type_obj){
           comission_id: 0
       }
   }
-  
   var error = "Valid body"
   var answer = true;
   var rightKeys = compareObjects(obj1, model_body)
 
   if (!rightKeys) {
-
+    // console.log(type_obj)
     answer = false
     error = "Wrong body keys"
     

@@ -105,6 +105,7 @@ async function createTrainer (trainerData) {
   return data
 
 }
+
 /**
  * Function that updates an trainer's information
  * @param {Object} trainer Trainer that it's information is going to be updated
@@ -119,34 +120,21 @@ async function updateTrainer (trainer) {
     return data_body
   }
 
-  var existPass = true
-  if( trainer.password == ""){
-    existPass = false
-  }
-
   try {
     
-    data = await dbPostgres.sql('trainer.updateTrainer', trainer)
+    if (trainer.password == "") {
 
-    if (!existPass) {
+        await dbPostgres.sql('trainer.updateTrainer', trainer)
 
-        await dbPostgres.transaction(async transaction_db => { // BEGIN
-
-            const create_result = await transaction_db.sql('users.updateUserNoPassword', trainer)
-            await transaction_db.sql('trainer.updateTrainer', trainer)
-
-            return "UPDATED"
-         })
-    }else {
+    } else {
 
         trainer.password = hashing.createHash(trainer.password)
 
         await dbPostgres.transaction(async transaction_db => { // BEGIN
 
-            const create_result = await transaction_db.sql('users.updateUser', trainer)
             await transaction_db.sql('trainer.updateTrainer', trainer)
+            await transaction_db.sql('users.updateUser', trainer)
 
-            return "UPDATED"
          })
     }
     
@@ -163,6 +151,37 @@ async function updateTrainer (trainer) {
   return data
 
 }
+
+/**
+ * Get the information of a given trainer
+ * @date 2019-10-23
+ * @param {nustring} id email of the trainer to be consulted
+ */
+async function getTrainer(id) {
+
+  var data = null
+
+  try {
+    data = await dbPostgres.sql('trainer.getTrainer', { id })
+    
+    if (data.rows.length != 0){
+      data = data.rows[0]
+    }else{
+      data = {}
+    }
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+  }
+
+  return data
+}
+
 /**
  * Function that check the error from the database and stablish error's message
  * @param {Object} error database's error
@@ -186,15 +205,15 @@ function handleDatabaseValidations(error) {
     data = {
       error: 'Ya existe un entrenador en el sistema con ese email'
     }      
-  } else if(constraint == 'trainer_ci_check'){
+  } else if(constraint == 'document_check'){
     data = {
-      error: 'Cédula debe ser un valor entre 1 y 999999999 '
+      error: 'Cédula debe ser un valor con un formato como V-1234 '
     }
   } else if(constraint == 'Password is not a string'){
     data = {
       error: 'La contraseña es invalida'
     }
-  } else if(constraint == 'users_name_check'){
+  } else if(constraint == 'trainer_name_check'){
     data = {
       error: 'Nombre de entrenador requerido'
     }
@@ -227,35 +246,6 @@ function handleDatabaseValidations(error) {
 
 }
 
-/**
- * Get the information of a given trainer
- * @date 2019-10-23
- * @param {nustring} email email of the trainer to be consulted
- */
-async function getTrainer(email) {
-
-  var data = null
-
-  try {
-    data = await dbPostgres.sql('trainer.getTrainer', { email })
-    
-    if (data.rows.length != 0){
-      data = data.rows[0]
-    }else{
-      data = {}
-    }
-
-  } catch (error) {
-    // Error handling
-    debug('Error: ', error)
-    data = {
-      error: 'No se pudo obtener la información de la base de datos'
-    }
-    data.code = 400
-  }
-
-  return data
-}
 
 module.exports = {
   getAllTrainers,

@@ -1,5 +1,5 @@
 -- Updates an user in the database
 UPDATE "deportes-cp".users
-SET name = :name,
+SET 
     password = :password
-WHERE email = :email
+WHERE id = :id

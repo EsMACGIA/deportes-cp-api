@@ -10,7 +10,7 @@ const objFuncs = require('../utilities/objectFunctions')
 // TODO: Fix every function!
 
 /**
- * Deletes a trainer from the database
+ * Deletes a athlete from the database
  * @param {number} id Trainer's id
  */
 async function deleteAthlete (id) {
@@ -19,14 +19,14 @@ async function deleteAthlete (id) {
 
   try {
 
-    data = await dbPostgres.sql('users.deleteUser', { id })
+    data = await dbPostgres.sql('athlete.deleteAthlete', { id })
     data.code = 201
 
   } catch (error) {
     // Error handling
     
     data = {
-      error: 'No se pudo eliminar al entrenador' 
+      error: 'No se pudo eliminar al atleta' 
     }
     error.code = 400
 
@@ -37,14 +37,14 @@ async function deleteAthlete (id) {
 }
 
 /**
- * Gets all trainer in the database
+ * Gets all athlete in the database
  */
 async function getAllAthletes () {
 
   var data = null
 
   try {
-    data = await dbPostgres.sql('trainer.getAllTrainers')
+    data = await dbPostgres.sql('athlete.getAllAthletes')
 
     data = data.rows
     data.code = 201
@@ -64,101 +64,57 @@ async function getAllAthletes () {
 }
 
 /**
- * Create trainer in the database
- * @param {Object} trainerData data of the new trainer
+ * Create athlete in the database
+ * @param {Object} athleteData data of the new athlete
  */
-async function createAthlete (trainerData) {
+async function createAthlete (athleteData) {
 
-  var data = null 
+var data = null 
 
   //checking if object is valid
-  var data_body = objFuncs.checkBody(trainerData, "trainer")
+  var data_body = objFuncs.checkBody(athleteData, "athlete")
   if( data_body.error ){
     return data_body
   }
-  
+
   try {
-    trainerData.password = hashing.createHash(trainerData.password)
 
-    
-    await dbPostgres.transaction(async transaction_db => { // BEGIN
+    data = await dbPostgres.sql('athlete.createAthlete', athleteData)
 
-        const create_result = await transaction_db.sql('users.createUser', trainerData)
-      
-        const user = create_result.rows[0]
-        trainerData.user_id = user.id
-      
-        await transaction_db.sql('trainer.createTrainer', trainerData)
-      
-        return user
-     })
+    data = data.rows
 
-    data = trainerData
-    data.action = "CREATED"
-    
   }catch (error) {
-    
     //Error handling
     debug('Error: ', error)
-    
-    // Get error's message
+
+    // Set error message
     data = handleDatabaseValidations(error)
   }
   return data
-
 }
 /**
- * Function that updates an trainer's information
- * @param {Object} trainer Trainer that it's information is going to be updated
+ * Function that updates an athlete's information
+ * @param {Object} athlete Trainer that it's information is going to be updated
  */
-async function updateAthlete (trainer) {
+async function updateAthlete (athlete) {
 
   var data = null
 
   //checking if object is valid
-  var data_body = objFuncs.checkBody(trainer, "trainer_update")
+  var data_body = objFuncs.checkBody(athlete, "athlete_update")
   if( data_body.error ){
     return data_body
   }
 
-  var existPass = true
-  if( trainer.password == ""){
-    existPass = false
-  }
-
   try {
     
-    data = await dbPostgres.sql('trainer.updateTrainer', trainer)
+    data = await dbPostgres.sql('athlete.updateAthlete', athlete)
 
-    if (!existPass) {
-
-        await dbPostgres.transaction(async transaction_db => { // BEGIN
-
-            const create_result = await transaction_db.sql('users.updateUserNoPassword', trainer)
-            await transaction_db.sql('trainer.updateTrainer', trainer)
-
-            return "UPDATED"
-         })
-    }else {
-
-        trainer.password = hashing.createHash(trainer.password)
-
-        await dbPostgres.transaction(async transaction_db => { // BEGIN
-
-            const create_result = await transaction_db.sql('users.updateUser', trainer)
-            await transaction_db.sql('trainer.updateTrainer', trainer)
-
-            return "UPDATED"
-         })
-    }
-    
-    data = trainer
-    data.action = "UPDATED"
   } catch (error) {
     // Error handling
     debug('Error: ', error)
 
-    // Get error's message
+    // Set error message
     data = handleDatabaseValidations(error)
   }
 
@@ -180,37 +136,25 @@ function handleDatabaseValidations(error) {
   }
   
   // Check if the database constraint error matches the expected error
-  if (constraint == 'trainer_ci_key') {
+  if (constraint == 'athlete_ci_key') {
     data = {
-      error: 'Ya existe un entrenador en el sistema con esa cédula'
-    }
-  } else if(constraint == 'users_email_key'){
-    data = {
-      error: 'Ya existe un entrenador en el sistema con ese email'
-    }      
-  } else if(constraint == 'trainer_ci_check'){
+      error: 'Ya existe un atleta en el sistema con esa cédula'
+    } 
+  } else if(constraint == 'athlete_ci_check'){
     data = {
       error: 'Cédula debe ser un valor entre 1 y 999999999 '
     }
-  } else if(constraint == 'Password is not a string'){
-    data = {
-      error: 'La contraseña es invalida'
-    }
   } else if(constraint == 'users_name_check'){
     data = {
-      error: 'Nombre de entrenador requerido'
+      error: 'Nombre de atleta requerido'
     }
-  } else if(constraint == 'trainer_lastname_check'){
+  } else if(constraint == 'athlete_lastname_check'){
     data = {
-      error: 'Apellido de entrenador requerido'
+      error: 'Apellido de atleta requerido'
     }
-  } else if(constraint == 'email_type_check'){
+  } else if(constraint == 'athlete_stock_number_check'){
     data = {
-      error: 'Email suministrado tiene un formato invalido'
-    }
-  } else if(constraint == 'users_password_check'){
-    data = {
-      error: 'Contraseña requerida'
+      error: 'El numero de accion debe ser mayor a 0'
     }
   } else if(error.queryContext){
     data = {
@@ -230,16 +174,16 @@ function handleDatabaseValidations(error) {
 }
 
 /**
- * Get the information of a given trainer
+ * Get the information of a given athlete
  * @date 2019-10-23
- * @param {nustring} email email of the trainer to be consulted
+ * @param {nustring} email email of the athlete to be consulted
  */
-async function getAthlete(email) {
+async function getAthlete(id) {
 
   var data = null
 
   try {
-    data = await dbPostgres.sql('trainer.getTrainer', { email })
+    data = await dbPostgres.sql('athlete.getAthlete', { id })
     
     if (data.rows.length != 0){
       data = data.rows[0]

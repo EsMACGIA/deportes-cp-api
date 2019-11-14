@@ -6,9 +6,11 @@ const debug = require('debug')(`${config.debug}controllers:trainers`)
 const dbPostgres = require('../db/').postgres()
 const hashing = require('../utilities/hashing')
 const objFuncs = require('../utilities/objectFunctions')
+const comissionController = require('./comissions.controller')
 
 /**
  * Deletes a trainer from the database
+ * @date 2019-11-14
  * @param {number} id Trainer's id
  */
 async function deleteTrainer (id) {
@@ -26,7 +28,7 @@ async function deleteTrainer (id) {
     data = {
       error: 'No se pudo eliminar al entrenador' 
     }
-    error.code = 400
+    data.code = 400
 
   }
 
@@ -36,6 +38,7 @@ async function deleteTrainer (id) {
 
 /**
  * Gets all trainer in the database
+ * date: 2019-11-14
  */
 async function getAllTrainers () {
 
@@ -53,7 +56,7 @@ async function getAllTrainers () {
     data = {
       error: 'No se pudo obtener la información de la base de datos'
     }
-    error.code = 400
+    data.code = 400
 
   }
 
@@ -63,6 +66,7 @@ async function getAllTrainers () {
 
 /**
  * Create trainer in the database
+ * @date 2019-11-14
  * @param {Object} trainerData data of the new trainer
  */
 async function createTrainer (trainerData) {
@@ -108,6 +112,7 @@ async function createTrainer (trainerData) {
 
 /**
  * Function that updates an trainer's information
+ * @date 2019-11-14
  * @param {Object} trainer Trainer that it's information is going to be updated
  */
 async function updateTrainer (trainer) {
@@ -154,8 +159,8 @@ async function updateTrainer (trainer) {
 
 /**
  * Get the information of a given trainer
- * @date 2019-10-23
- * @param {nustring} id email of the trainer to be consulted
+ * @date 2019-11-14
+ * @param {nustring} id id of the trainer to be consulted
  */
 async function getTrainer(id) {
 
@@ -177,6 +182,73 @@ async function getTrainer(id) {
       error: 'No se pudo obtener la información de la base de datos'
     }
     data.code = 400
+  }
+
+  return data
+}
+
+/**
+ * Relates a trainer and a comission
+ * @date 2019-11-14
+ * @param {Object} trainerComission object with the id of trainer and comission to add
+ */
+async function addComission(trainerComission) {
+
+  var data = null
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(trainerComission, "trainer_comission")
+  if( data_body.error ){
+    return data_body
+  }
+
+  try {
+
+    await dbPostgres.sql('trainer.addComission', trainerComission)
+    
+    data = trainerComission
+    data.action = 'ADDED'
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+
+    // Get error's message
+    data = handleDatabaseValidations(error)
+  }
+
+  return data
+}
+
+/**
+ * Deletes de relation between a trainer and a comission
+ * @date 2019-11-14
+ * @param {Object} trainerComission object with the id of trainer and comission to add
+ */
+async function deleteComission(trainerComission) {
+
+  var data = null
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(trainerComission, "trainer_comission")
+  if( data_body.error ){
+    return data_body
+  }
+
+  try {
+      
+    data = await dbPostgres.sql('trainer.deleteComission', trainerComission)
+    
+    data.code = 201
+
+  } catch (error) {
+    // Error handling
+    console.log(error)
+    data = {
+      error: 'No se pudo eliminar la comisión del entrenador' 
+    }
+    data.code = 400
+
   }
 
   return data
@@ -229,6 +301,20 @@ function handleDatabaseValidations(error) {
     data = {
       error: 'Contraseña requerida'
     }
+
+  } else if(constraint == 'trainer_comission_comission_id_fkey'){
+    data = {
+      error: 'No existe la comisión que intentas agregar al trainer'
+    }
+
+  } else if(constraint == 'trainer_comission_trainer_id_fkey'){
+    data = {
+      error: 'No existe el entrenador'
+    }
+  }else if(constraint == 'trainer_comission_pkey'){
+    data = {
+      error: 'Ya estaban relacionados esa comisión y entrenador'
+    }
   } else if(error.queryContext){
     data = {
       error: error.message
@@ -241,7 +327,6 @@ function handleDatabaseValidations(error) {
   data.code = 400
 
   debug('CONSTRAINT', constraint)
-
   return data
 
 }
@@ -252,5 +337,7 @@ module.exports = {
   createTrainer,
   updateTrainer,
   deleteTrainer,
-  getTrainer
+  getTrainer,
+  addComission,
+  deleteComission
 }

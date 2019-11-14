@@ -103,6 +103,23 @@ function compareTypeObject(obj1, type_obj){
       ci : '',
       stock_number : 0
     }
+  }else if(type_obj == "class"){
+      model_body = {
+          description : '',
+          comission_id : 0
+
+      }
+  }else if(type_obj == "class_update"){
+    model_body = {
+        id : 0,
+        description : ''
+
+    }
+  }else if(type_obj == "trainer_comission"){
+      model_body = {
+          trainer_id: 0,
+          comission_id: 0
+      }
   }
   var error = "Valid body"
   var answer = true;

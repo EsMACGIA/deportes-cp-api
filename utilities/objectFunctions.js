@@ -84,6 +84,18 @@ function compareTypeObject(obj1, type_obj){
         lastname: '',
         password: ''
       }
+  }else if(type_obj == "class"){
+      model_body = {
+          description : '',
+          comission_id : 0
+
+      }
+  }else if(type_obj == "class_update"){
+    model_body = {
+        id : 0,
+        description : ''
+
+    }
   }
   
   var error = "Valid body"

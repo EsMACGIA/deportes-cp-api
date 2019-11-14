@@ -130,8 +130,8 @@ async function updateComission (comission) {
     
       await dbPostgres.transaction(async transaction_db => { // BEGIN
 
-        data = await dbPostgres.sql('users.updateUser', comission)
-        await dbPostgres.sql('comissions.updateComission', comission)
+        data = await transaction_db.sql('users.updateUser', comission)
+        await transaction_db.sql('comissions.updateComission', comission)
       })
     }
   } catch (error) {

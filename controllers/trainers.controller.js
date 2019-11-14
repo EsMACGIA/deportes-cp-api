@@ -155,7 +155,7 @@ async function updateTrainer (trainer) {
 /**
  * Get the information of a given trainer
  * @date 2019-10-23
- * @param {nustring} id email of the trainer to be consulted
+ * @param {nustring} id id of the trainer to be consulted
  */
 async function getTrainer(id) {
 

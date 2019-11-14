@@ -1,13 +1,11 @@
 'use strict'
 
 // Controllers
-const comissionsController = require('../../controllers/comissions.controller')
+const classesController = require('../../controllers/classes.controller')
 
 module.exports = async (req, res) => {
 
-  var comissionData = req.body
-
-  var data = await comissionsController.createComission(comissionData)
+  var data = await classesController.updateClass(req.body)
 
   if (data.error) {
     res.status(data.code)
@@ -15,6 +13,7 @@ module.exports = async (req, res) => {
   } else {
     res.status(201)
   }
+
   res.send(data)
 
 }

@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
 
   var classData = req.body
 
-  var data = await classesController.createClass(classData, res)
+  var data = await classesController.createClass(classData)
 
   if (data.error) {
     res.status(data.code)

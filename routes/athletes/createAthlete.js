@@ -1,13 +1,13 @@
 'use strict'
 
 // Controllers
-const comissionsController = require('../../controllers/comissions.controller')
+const athletesController = require('../../controllers/athletes.controller')
 
 module.exports = async (req, res) => {
 
-  var comissionData = req.body
+  var athleteData = req.body
 
-  var data = await comissionsController.createComission(comissionData)
+  var data = await athletesController.createAthlete(athleteData, res)
 
   if (data.error) {
     res.status(data.code)

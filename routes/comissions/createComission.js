@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
 
   var comissionData = req.body
 
-  var data = await comissionsController.createComission(comissionData, res)
+  var data = await comissionsController.createComission(comissionData)
 
   if (data.error) {
     res.status(data.code)

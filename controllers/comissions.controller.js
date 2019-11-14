@@ -26,7 +26,7 @@ async function deleteComission (id) {
     data = {
       error: 'No se pudo eliminar la comisión'
     }
-    error.code = 400
+    data.code = 400
 
   }
 
@@ -52,7 +52,7 @@ async function getAllComissions () {
     data = {
       error: 'No se pudo obtener la información de la base de datos'
     }
-    error.code = 400
+    data.code = 400
 
   }
 

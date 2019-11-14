@@ -96,6 +96,11 @@ function compareTypeObject(obj1, type_obj){
         description : ''
 
     }
+  }else if(type_obj == "trainer_comission"){
+      model_body = {
+          trainer_id: 0,
+          comission_id: 0
+      }
   }
   
   var error = "Valid body"

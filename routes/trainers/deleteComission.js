@@ -5,9 +5,10 @@ const trainersController = require('../../controllers/trainers.controller')
 
 module.exports = async (req, res) => {
 
-  var trainerData = req.body
+  //this body should have the id of the trainer and the comission 
+  var comissionTrainer = req.body
 
-  var data = await trainersController.createTrainer(trainerData)
+  var data = await trainersController.deleteComission(comissionTrainer)
 
   if (data.error) {
     res.status(data.code)

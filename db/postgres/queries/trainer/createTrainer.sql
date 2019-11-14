@@ -1,3 +1,3 @@
-INSERT INTO "deportes-cp".trainer (lastname , discipline_id, CI, user_id )
-VALUES ( :lastname, :discipline_id, :ci, :user_id)
+INSERT INTO "deportes-cp".trainer (name, lastname, ci, user_id )
+VALUES (:name, :lastname, :ci, :user_id)
 RETURNING *

@@ -113,7 +113,7 @@ async function updateComission (comission) {
   var data = null
 
   //checking if object is valid
-  var data_body = objFuncs.checkBody(comission, "comission")
+  var data_body = objFuncs.checkBody(comission, "comissionCreated")
   if( data_body.error ){
     return data_body
   }
@@ -122,19 +122,17 @@ async function updateComission (comission) {
 
     if(comission.password == ""){
 
-      data = await dbPostgres.sql('comissions.updateComissionNoPassword', comission)    
+      data = await dbPostgres.sql('comissions.updateComission', comission)    
       
     } else {
       
-      if (typeof(comission.password) != 'string'){
-        throw new Error('Password is not a string')
-      }
-
       comission.password = hashing.createHash(comission.password)
+    
+      await dbPostgres.transaction(async transaction_db => { // BEGIN
 
-
-      data = await dbPostgres.sql('comissions.updateComission', comission)
-
+        data = await dbPostgres.sql('users.updateUser', comission)
+        await dbPostgres.sql('comissions.updateComission', comission)
+      })
     }
   } catch (error) {
     // Error handling
@@ -147,6 +145,36 @@ async function updateComission (comission) {
   return data
 
 }
+
+/**
+ * Get the information of a given comission
+ * @date 2019-10-23
+ * @param {nustring} id id of the comission to be consulted
+ */
+async function getComission(id) {
+
+  var data = null
+
+  try {
+    data = await dbPostgres.sql('comissions.getComission', { id })
+
+    if (data.rows.length != 0){
+      data = data.rows[0]
+    }
+    
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+  }
+
+  return data
+}
+
+
 /**
  * Function that check the error from the database and stablish error's message
  * @param {Object} error database's error
@@ -170,7 +198,7 @@ function handleDatabaseValidations(error) {
     data = {
       error: 'La contraseña es invalida'
     }
-  } else if(constraint == 'users_name_check'){
+  } else if(constraint == 'comission_name_check'){
     data = {
       error: 'Nombre de comisión requerida'
     }
@@ -197,33 +225,6 @@ function handleDatabaseValidations(error) {
 
 }
 
-/**
- * Get the information of a given comission
- * @date 2019-10-23
- * @param {nustring} email email of the comission to be consulted
- */
-async function getComission(email) {
-
-  var data = null
-
-  try {
-    data = await dbPostgres.sql('comissions.getComission', { email })
-
-    if (data.rows.length != 0){
-      data = data.rows[0]
-    }
-    
-  } catch (error) {
-    // Error handling
-    debug('Error: ', error)
-    data = {
-      error: 'No se pudo obtener la información de la base de datos'
-    }
-    data.code = 400
-  }
-
-  return data
-}
 
 module.exports = {
   getAllComissions,

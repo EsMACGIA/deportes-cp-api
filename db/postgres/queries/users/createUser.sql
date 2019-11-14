@@ -1,3 +1,3 @@
-INSERT INTO "deportes-cp".users (id , email, password, name)
-VALUES ( DEFAULT,:email, :password, :name)
+INSERT INTO "deportes-cp".users (id , email, password)
+VALUES ( DEFAULT,:email, :password)
 RETURNING *

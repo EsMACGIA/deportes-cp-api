@@ -1,4 +1,4 @@
 -- Get an user information from the database
-SELECT *
+SELECT id, name, lastname, ci, email
 FROM "deportes-cp".users JOIN "deportes-cp".trainer ON user_id = id
-WHERE email = :email
+WHERE id = :id

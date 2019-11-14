@@ -40,7 +40,6 @@ function compareTypeObject(obj1, type_obj){
   if( type_obj == "user"){
     model_body = {
         email: '',
-        name: '',
         password: ''
       }
   }else if(type_obj =="discipline"){
@@ -64,24 +63,26 @@ function compareTypeObject(obj1, type_obj){
       password: '',
       name: ''
     }
+  }else if(type_obj == "comissionCreated"){
+    model_body = {
+      password: '',
+      name: '',
+      id: 0
+    }
   }else if(type_obj == "trainer"){
     model_body = {
         email: '',
         name: '',
-        discipline_id: 0,
         lastname: '',
         password: '',
-        ci: 0,
+        ci: ''
       }
   }else if(type_obj == "trainer_update"){
     model_body = {
         id: 0,
-        email: '',
         name: '',
-        discipline_id: 0,
         lastname: '',
-        password: '',
-        ci: 0,
+        password: ''
       }
   }else if(type_obj == "athlete"){
     model_body = {

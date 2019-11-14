@@ -11,7 +11,7 @@ const objFuncs = require('../utilities/objectFunctions')
 
 /**
  * Deletes a athlete from the database
- * @param {number} id Trainer's id
+ * @param {number} id Athlete's id
  */
 async function deleteAthlete (id) {
 
@@ -78,8 +78,12 @@ var data = null
   }
 
   try {
-
-    data = await dbPostgres.sql('athlete.createAthlete', athleteData)
+    
+    if(athleteData.ci == ''){
+      data = await dbPostgres.sql('athlete.createAthleteNullCI', athleteData)
+    }else {
+      data = await dbPostgres.sql('athlete.createAthlete', athleteData)
+    }
 
     data = data.rows
 
@@ -107,9 +111,13 @@ async function updateAthlete (athlete) {
   }
 
   try {
-    
-    data = await dbPostgres.sql('athlete.updateAthlete', athlete)
 
+    if(athlete.ci == ''){
+      data = await dbPostgres.sql('athlete.updateAthleteNullCI', athlete)
+    }else {
+      data = await dbPostgres.sql('athlete.updateAthlete', athlete)
+    }
+    
   } catch (error) {
     // Error handling
     debug('Error: ', error)

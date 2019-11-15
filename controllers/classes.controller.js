@@ -287,7 +287,11 @@ function handleDatabaseValidations(error) {
       data = {
         error: 'No existe la clase a la que estas intentando agregar el atleta'
       }
-    }else{
+    } else if(constraint == 'athlete_class_pkey'){
+      data = {
+        error: 'Ya el atleta esta inscrito en esa clase'
+      }
+    } else {
       data = {
         error: 'Unidentified error'
       }      

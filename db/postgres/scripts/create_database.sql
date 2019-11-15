@@ -110,11 +110,11 @@ CREATE TABLE schedule (
 CREATE TABLE request (
 
      id SERIAL,
-     athlete_id integer NOT NULL REFERENCES athlete ON DELETE CASCADE,
-     class_id integer NOT NULL REFERENCES class ON DELETE CASCADE,
+     athlete_id integer NOT NULL REFERENCES athlete,
+     class_id integer NOT NULL REFERENCES class,
      status status_domain NOT NULL,
-     --faltan tributos
-
+     retire boolean NOT NULL,
+  
      -- Constraints
      PRIMARY KEY (id)
 );
@@ -133,7 +133,13 @@ CREATE TABLE athlete_class (
 
 CREATE OR REPLACE FUNCTION request_insert() RETURNS TRIGGER AS $athlete_in_class$
    BEGIN
-      INSERT INTO athlete_class(athlete_id, class_id) VALUES (new.athlete_id, new.class_id);
+
+      IF new.retire THEN
+        DELETE FROM "deportes-cp".athlete_class AS A WHERE new.athlete_id=A.athlete_id AND new.class_id=A.class_id;
+      ELSE
+        INSERT INTO "deportes-cp".athlete_class(athlete_id, class_id) VALUES (new.athlete_id, new.class_id);
+      END IF;
+
       RETURN NULL;
    END;
 $athlete_in_class$ LANGUAGE plpgsql;

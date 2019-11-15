@@ -94,13 +94,17 @@ function handleDatabaseValidations(error) {
         data = {
           error: 'No existe el atleta indicado'
         }      
+    } else if(constraint == 'athlete_class_pkey'){
+        data = {
+          error: 'Ya se encuentra registrado en esa clase'
+        }      
     } else{
       data = {
         error: 'Unidentified error'
       }      
     }
     data.code = 400
-  
+    
     debug('CONSTRAINT', constraint)
   
     return data
@@ -112,8 +116,5 @@ function handleDatabaseValidations(error) {
 
 module.exports = {
     getAllRequests,
-    createRequest,
-    updateRequest,
-    deleteRequest,
-    getRequest
+    createRequest
 }

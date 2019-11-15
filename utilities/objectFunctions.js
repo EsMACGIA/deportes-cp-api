@@ -124,8 +124,8 @@ function compareTypeObject(obj1, type_obj){
     model_body = {
         athlete_id: 0,
         class_id: 0,
-        retire: true,
-        status: ''
+        status: '',
+        retire: true
     }
 }
   var error = "Valid body"

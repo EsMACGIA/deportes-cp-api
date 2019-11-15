@@ -50,7 +50,7 @@ async function loginUser (userData) {
         return data
     }
 
-    var trainer = trainersController.getTrainer(email);
+    var trainer = await trainersController.getTrainer(data.rows[0].id);
 
     //case where all data was valid
     var jwtObj = {
@@ -65,6 +65,9 @@ async function loginUser (userData) {
 
     if (trainer.ci) {
       data.type = 3
+      // TODO: definir correo del admin y ponerlo en el .env
+    } else if(email == "deportesCPadmin@cp.com"){
+      data.type = 1
     } else {
       data.type = 2
     }
@@ -97,27 +100,34 @@ async function restorePassword(account){
   var data = null
 
   var user = await users.getUser(account)
-
-
-  if(user.name){
-
-    delete(user.id)
-    var passwd = randomstring.generate(8)
-    user.password = passwd
-    data = await users.updateUser(user)
-
-    email.sendEmail(account, 
-    'Recuperacion de contraseña', 
-    `Estimad@ ${user.name}, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
-
-    }else{
-
-      data = {
-        error: "El usuario no existe en la base de datos",
-        code : "400"
-      }   
+  try{
+    if(user.email){
+      var passwd = randomstring.generate(8)
+      user.password = hashing.createHash(passwd)
+      data = await dbPostgres.sql('users.updateUser', user)
   
-    }
+      email.sendEmail(account, 
+      'Recuperacion de contraseña', 
+      `Estimad@ usuari@, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
+  
+      }else{
+  
+        data = {
+          error: "El usuario no existe en la base de datos",
+          code : "400"
+        }   
+    
+      }
+  }catch(error){
+     // Error handling
+     debug('Error: ', error)
+
+     // Get error's message
+     data = {
+       error : "Unknown error when recovering password",
+       code : "400"
+     }
+  }
 
   return data
 }

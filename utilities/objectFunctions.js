@@ -106,7 +106,8 @@ function compareTypeObject(obj1, type_obj){
   }else if(type_obj == "class"){
       model_body = {
           description : '',
-          comission_id : 0
+          comission_id : 0,
+          schedules: []
 
       }
   }else if(type_obj == "class_update"){
@@ -120,7 +121,14 @@ function compareTypeObject(obj1, type_obj){
           trainer_id: 0,
           comission_id: 0
       }
-  }
+  }else if(type_obj == "request"){
+    model_body = {
+        athlete_id: 0,
+        class_id: 0,
+        status: '',
+        retire: true
+    }
+}
   var error = "Valid body"
   var answer = true;
   var rightKeys = compareObjects(obj1, model_body)

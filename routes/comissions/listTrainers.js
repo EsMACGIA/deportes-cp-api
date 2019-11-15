@@ -1,11 +1,12 @@
 'use strict'
 
 // Controllers
-const usersController = require('../../controllers/users.controller')
+const comissionsController = require('../../controllers/comissions.controller')
 
 module.exports = async (req, res) => {
 
-  var data = await usersController.getAllUsers()
+  var id = req.params.id
+  var data = await comissionsController.listTrainers(id)
 
   if (data.constructor === Array) {
     res.status(200)

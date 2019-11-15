@@ -106,7 +106,8 @@ function compareTypeObject(obj1, type_obj){
   }else if(type_obj == "class"){
       model_body = {
           description : '',
-          comission_id : 0
+          comission_id : 0,
+          schedules: []
 
       }
   }else if(type_obj == "class_update"){

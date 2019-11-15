@@ -73,8 +73,21 @@ async function createClass (classData) {
     }
     
     try {
+
+      await dbPostgres.transaction(async transaction_db => { // BEGIN
+
+        const create_result = await transaction_db.sql('classes.createClass', classData)
       
-      const create_result = await dbPostgres.sql('classes.createClass', classData)
+        const clas = create_result.rows[0]
+        const class_id = clas.id
+
+        classData.schedules.forEach(async element => {
+          element.class_id = class_id;
+          await transaction_db.sql('schedules.createSchedule', element)
+        });
+
+     })
+      
       data = classData
       data.action = "CREATED"
       

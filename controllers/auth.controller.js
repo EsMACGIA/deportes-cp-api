@@ -65,8 +65,7 @@ async function loginUser (userData) {
 
     if (trainer.ci) {
       data.type = 3
-      // TODO: definir correo del admin y ponerlo en el .env
-    } else if(email == "deportesCPadmin@cp.com"){
+    } else if(email == config.roles.admin){
       data.type = 1
     } else {
       data.type = 2

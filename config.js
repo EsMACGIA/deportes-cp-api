@@ -26,10 +26,15 @@ const config = {
   email: {
     account: process.env.EMAIL_ACCOUNT || 'test@deportescp.com',
     password: process.env.EMAIL_PASSWORD || '12345678'
-  },
+  }, 
   
   // JWT
-  jwt_key: process.env.JWT_KEY || '123456789'
+  jwt_key: process.env.JWT_KEY || '123456789',
+
+  // Roles
+  roles: {
+    admin: process.env.ADMIN_EMAIL|| 'deportescp@gmail.com'
+  }
 }
 
 module.exports = config

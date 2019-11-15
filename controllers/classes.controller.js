@@ -157,6 +157,92 @@ async function getClass(id) {
 }
 
 /**
+ * Get the information of the athletes in a given class
+ * @date 2019-10-23
+ * @param {nustring} id id of the class to be consulted
+ */
+async function getAthletesInClass(id) {
+
+  var data = null
+
+  try {
+
+    data = await dbPostgres.sql('classes.getAthletesInClass', { id })
+    
+    if (data.rows.length != 0){
+      data = data.rows
+    }else{
+      data = {}
+    }
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+  }
+
+  return data
+}
+
+/**
+ * Create athlete_class in the database
+ * @param {Object} classData data of the new class
+ */
+async function createAthleteInClass (athlete_id, class_id) {
+
+  var data = null 
+  var classData = {athlete_id , class_id}
+
+  try {
+    
+    const create_result = await dbPostgres.sql('classes.createAthleteInClass', classData)
+    data = classData
+    data.action = "CREATED"
+    
+  }catch (error) {
+    
+    //Error handling
+    debug('Error: ', error)
+    
+    // Get error's message
+    data = handleDatabaseValidations(error)
+
+  }
+  return data
+
+}
+
+/**
+ * Delete athlete_class in the database
+ * @param {Object} classData data of the new class
+ */
+async function deleteAthleteInClass (athlete_id, class_id) {
+
+  var data = null 
+  var classData = {athlete_id , class_id}
+  try {
+    
+    const create_result = await dbPostgres.sql('classes.deleteAthleteInClass', classData)
+    data = classData
+    data.action = "DELETED"
+    
+  }catch (error) {
+    
+    //Error handling
+    debug('Error: ', error)
+    
+    // Get error's message
+    data = handleDatabaseValidations(error)
+
+  }
+  return data
+
+}
+
+/**
  * Function that checks the error from the database and stablish error's message
  * @param {Object} error database's error
  */
@@ -180,7 +266,15 @@ function handleDatabaseValidations(error) {
         error: 'No existe la comisión a la que estas intentando asignar la clase'
       }      
     
-    } else{
+    }else if (constraint == 'athlete_class_athlete_id_fkey') {
+      data = {
+        error: 'No existe el atleta que estas intentando agregar a la clase'
+      }   
+    } else if(constraint == 'athlete_class_class_id_fkey'){
+      data = {
+        error: 'No existe la clase a la que estas intentando agregar el atleta'
+      }
+    }else{
       data = {
         error: 'Unidentified error'
       }      
@@ -201,5 +295,8 @@ module.exports = {
     createClass,
     updateClass,
     deleteClass,
-    getClass
+    getClass,
+    getAthletesInClass,
+    createAthleteInClass,
+    deleteAthleteInClass
 }

@@ -211,7 +211,7 @@ async function createAthleteInClass (athlete_id, class_id) {
 
   try {
     
-    const create_result = await dbPostgres.sql('classes.createAthleteInClass', classData)
+    await dbPostgres.sql('classes.createAthleteInClass', classData)
     data = classData
     data.action = "CREATED"
     
@@ -238,7 +238,7 @@ async function deleteAthleteInClass (athlete_id, class_id) {
   var classData = {athlete_id , class_id}
   try {
     
-    const create_result = await dbPostgres.sql('classes.deleteAthleteInClass', classData)
+    await dbPostgres.sql('classes.deleteAthleteInClass', classData)
     data = classData
     data.action = "DELETED"
     

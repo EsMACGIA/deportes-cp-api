@@ -8,7 +8,7 @@ const hashing = require('../utilities/hashing')
 const objFuncs = require('../utilities/objectFunctions')
 const jwt = require('../utilities/jwt')
 const users = require('./users.controller')
-const email = require('../utilities/email')
+const emails = require('../utilities/email')
 const randomstring = require('randomstring')
 const trainersController = require('./trainers.controller')
 
@@ -106,7 +106,7 @@ async function restorePassword(account){
       user.password = hashing.createHash(passwd)
       data = await dbPostgres.sql('users.updateUser', user)
   
-      email.sendEmail(account, 
+      emails.sendEmail(account, 
       'Recuperacion de contraseña', 
       `Estimad@ usuari@, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
   

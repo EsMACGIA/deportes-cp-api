@@ -296,7 +296,7 @@ function handleDatabaseValidations(error) {
         error: 'No existe ese entrenador'
       }
     } else {
-      console.log(constraint)
+    
       data = {
         error: 'Unidentified error'
       }      

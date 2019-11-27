@@ -71,29 +71,44 @@ async function createClass (classData) {
     if( data_body.error ){
       return data_body
     }
+
+    //checking that each schedule has a correct body
+    var error_data = {}
+    classData.schedules.forEach(function (schedule){
+      data_body = objFuncs.checkBody(schedule, "schedule")
+      if( data_body.error ){       
+        error_data = data_body
+      }
+    })
+
+    if(error_data.error){
+      return error_data
+    }
     
     try {
 
       await dbPostgres.transaction(async transaction_db => { // BEGIN
 
+        var schedules = classData.schedules
+        var n = schedules.length
         const create_result = await transaction_db.sql('classes.createClass', classData)
       
         const clas = create_result.rows[0]
         const class_id = clas.id
 
-        classData.schedules.forEach(async element => {
-          element.class_id = class_id;
-          await transaction_db.sql('schedules.createSchedule', element)
-        });
+        for (var i = 0;  i < n ; i++ ){
+          schedules[i].class_id = class_id
+          await transaction_db.sql('schedules.createSchedule', schedules[i])
+        }
+      })
 
-     })
-      
       data = classData
       data.action = "CREATED"
       
     }catch (error) {
       
       //Error handling
+      console.log(error)
       debug('Error: ', error)
       
       // Get error's message
@@ -262,9 +277,11 @@ async function deleteAthleteInClass (athlete_id, class_id) {
 function handleDatabaseValidations(error) {
     var data = null
     var constraint = null
+    var code = null
   
     if(error.queryContext){
       constraint = error.queryContext.error.constraint
+      code = error.queryContext.error.code
     } else {
       constraint = error.message
     }
@@ -294,6 +311,18 @@ function handleDatabaseValidations(error) {
     } else if(constraint == "class_trainer_id_fkey"){
       data = {
         error: 'No existe ese entrenador'
+      }
+    } else if(code == '22007'){
+      data = {
+        error: 'Alguna de las hora introducidas tiene un formato inválido'
+      }
+    } else if(constraint == "schedule_weekday_check"){
+      data = {
+        error: 'Ese no es un día válido'
+      }
+    } else if(constraint == "schedule_check"){
+      data = {
+        error: 'La hora de inicio debe ser más temprano que la hora de fin'
       }
     } else {
     

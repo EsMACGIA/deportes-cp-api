@@ -129,7 +129,14 @@ function compareTypeObject(obj1, type_obj){
         status: '',
         retire: true
     }
-}
+  }else if(type_obj == "schedule"){   
+    model_body = {
+        weekday:0,
+        start_hour: '',
+        end_hour: ''
+    }
+    
+    }
   var error = "Valid body"
   var answer = true;
   var rightKeys = compareObjects(obj1, model_body)

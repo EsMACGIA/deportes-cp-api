@@ -108,7 +108,6 @@ async function createClass (classData) {
     }catch (error) {
       
       //Error handling
-      console.log(error)
       debug('Error: ', error)
       
       // Get error's message

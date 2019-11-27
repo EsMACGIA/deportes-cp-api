@@ -201,6 +201,32 @@ async function listTrainers(id) {
   return data
 }
 
+/**
+ * List classes of the given comission 
+ * @date 2019-11-26
+ * @param {integer} id id of the comission to be consulted
+ */
+async function listClasses(id) {
+
+  var data = null
+
+  try {
+
+    data = await dbPostgres.sql('comissions.listClasses', { id })
+    data = data.rows
+    
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+  }
+
+  return data
+}
+
 
 /**
  * Function that check the error from the database and stablish error's message
@@ -259,5 +285,6 @@ module.exports = {
   updateComission,
   deleteComission,
   getComission,
-  listTrainers
+  listTrainers,
+  listClasses
 }

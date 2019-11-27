@@ -291,7 +291,12 @@ function handleDatabaseValidations(error) {
       data = {
         error: 'Ya el atleta esta inscrito en esa clase'
       }
+    } else if(constraint == "class_trainer_id_fkey"){
+      data = {
+        error: 'No existe ese entrenador'
+      }
     } else {
+      console.log(constraint)
       data = {
         error: 'Unidentified error'
       }      

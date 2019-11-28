@@ -66,10 +66,14 @@ async function loginUser (userData) {
       user.ci = trainer.ci
       user.name = trainer.name
       user.lastname = trainer.lastname
+      user.role = "trainer"
       
       // TODO: definir correo del admin y ponerlo en el .env
-    } else if(email != "deportesCP@gmail.com"){
+    } else if(email == "deportesCP@gmail.com"){
+      user.role = "admin"
+    } else {
       user.name = comission.name
+      user.role = "commission"
     }
     
     //case where all data was valid

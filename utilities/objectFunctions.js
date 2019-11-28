@@ -114,6 +114,7 @@ function compareTypeObject(obj1, type_obj){
     model_body = {
         id : 0,
         description : '',
+        schedules: [],
         trainer_id : 0
 
     }

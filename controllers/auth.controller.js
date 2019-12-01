@@ -10,8 +10,6 @@ const jwt = require('../utilities/jwt')
 const users = require('./users.controller')
 const emails = require('../utilities/email')
 const randomstring = require('randomstring')
-const trainersController = require('./trainers.controller')
-const comissionsController = require('./comissions.controller')
 
 /**
  * Login user returning a token
@@ -52,8 +50,21 @@ async function loginUser (userData) {
     }
 
     var user_id = data.rows[0].id
-    var trainer = await trainersController.getTrainer(user_id);
-    var comission = await comissionsController.getComission(user_id); 
+    var trainer = await dbPostgres.sql('trainer.getTrainer', { id: user_id })
+    
+    if (trainer.rows.length != 0){
+      trainer = trainer.rows[0]
+    }else{
+      trainer = {}
+    }
+
+
+    var comission = await dbPostgres.sql('comissions.getComission', { id: user_id })
+    if (comission.rows.length != 0){
+      comission = comission.rows[0]
+    }else{
+      comission = {}
+    }
 
 
     user = {

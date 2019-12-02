@@ -21,6 +21,7 @@ const config = {
   
   // Debug
   debug: 'deportes-cp-api:',
+ 
 
   // Email
   email: {
@@ -29,7 +30,10 @@ const config = {
   },
   
   // JWT
-  jwt_key: process.env.JWT_KEY || '123456789'
+  jwt_key: process.env.JWT_KEY || '123456789',
+
+  //Admin information
+  admin_email: 'deportescp@gmail.com'
 }
 
 module.exports = config

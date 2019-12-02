@@ -80,7 +80,7 @@ async function loginUser (userData) {
       user.role = "trainer"
       
       // TODO: definir correo del admin y ponerlo en el .env
-    } else if(email == "deportesCP@gmail.com"){
+    } else if(email.toLowerCase() == config.admin_email){
       user.role = "admin"
     } else {
       user.name = comission.name

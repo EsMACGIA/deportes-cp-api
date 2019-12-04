@@ -130,10 +130,39 @@ async function updateClass (classUpdate) {
     if( data_body.error ){
       return data_body
     }
+
+    //checking that each schedule has a correct body
+    var error_data = {}
+    classUpdate.schedules.forEach(function (schedule){
+      data_body = objFuncs.checkBody(schedule, "schedule")
+      if( data_body.error ){       
+        error_data = data_body
+      }
+    })
+
+    if(error_data.error){
+      return error_data
+    }
+
+    
   
     try {
       
-      data = await dbPostgres.sql('classes.updateClass', classUpdate)  
+      await dbPostgres.transaction(async transaction_db => { // BEGIN
+
+        var schedules = classUpdate.schedules
+        var n = schedules.length
+
+        const class_id = classUpdate.id
+
+        await dbPostgres.sql('schedules.deleteAllSchedulesOfClass', {id: class_id})
+        data = await dbPostgres.sql('classes.updateClass', classUpdate)
+    
+        for (var i = 0;  i < n ; i++ ){
+          schedules[i].class_id = class_id
+          await transaction_db.sql('schedules.createSchedule', schedules[i])
+        }
+      })
 
     } catch (error) {
       // Error handling

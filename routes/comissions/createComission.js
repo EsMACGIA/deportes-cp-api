@@ -6,8 +6,8 @@ const comissionsController = require('../../controllers/comissions.controller')
 module.exports = async (req, res) => {
 
   var comissionData = req.body
-
-  var data = await comissionsController.createComission(comissionData)
+  var user_token = req.user.user
+  var data = await comissionsController.createComission(comissionData, user_token)
 
   if (data.error) {
     res.status(data.code)

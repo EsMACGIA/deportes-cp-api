@@ -48,7 +48,7 @@ async function createRequest (requestData) {
     
     try {
       
-      const create_result = await dbPostgres.sql('requests.createRequest', requestData)
+      await dbPostgres.sql('requests.createRequest', requestData)
       data = requestData
       data.action = "CREATED"
       

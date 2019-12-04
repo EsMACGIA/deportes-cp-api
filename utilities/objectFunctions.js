@@ -113,7 +113,9 @@ function compareTypeObject(obj1, type_obj){
   }else if(type_obj == "class_update"){
     model_body = {
         id : 0,
-        description : ''
+        description : '',
+        schedules: [],
+        trainer_id : 0
 
     }
   }else if(type_obj == "trainer_comission"){
@@ -128,7 +130,14 @@ function compareTypeObject(obj1, type_obj){
         status: '',
         retire: true
     }
-}
+  }else if(type_obj == "schedule"){   
+    model_body = {
+        weekday:0,
+        start_hour: '',
+        end_hour: ''
+    }
+    
+    }
   var error = "Valid body"
   var answer = true;
   var rightKeys = compareObjects(obj1, model_body)

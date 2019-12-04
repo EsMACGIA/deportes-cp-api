@@ -2,7 +2,7 @@
 
 // Configuration 
 const config = require('../config')
-
+const jwt = require('../utilities/jwt')
 const debug = require('debug')(`${config.debug}controllers:comissions`)
 const dbPostgres = require('../db/').postgres()
 const hashing = require('../utilities/hashing')
@@ -11,10 +11,14 @@ const objFuncs = require('../utilities/objectFunctions')
 /**
  * Deletes a commision from the database
  * @param {number} id Comission's id
+ * @param {Object} user_token objeto que tiene la informacion del usuario que quiere usar la funcionalidad
  */
-async function deleteComission (id) {
+async function deleteComission (id, user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
 
   try {
 
@@ -36,10 +40,14 @@ async function deleteComission (id) {
 
 /**
  * Gets all comissions in the database
+ * @param {Object} user_token objeto que tiene la informacion del usuario que quiere usar la funcionalidad
  */
-async function getAllComissions () {
+async function getAllComissions (user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
 
   try {
     data = await dbPostgres.sql('comissions.getAllComissions')
@@ -63,10 +71,14 @@ async function getAllComissions () {
 /**
  * Create comission in the database
  * @param {Object} comissionData data of the new comission
+ * @param {Object} user_token objeto que tiene la informacion del usuario que quiere usar la funcionalidad
  */
-async function createComission (comissionData) {
+async function createComission (comissionData, user_token) {
 
   var data = null 
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
 
   //checking if object is valid
   var data_body = objFuncs.checkBody(comissionData, "comission")
@@ -107,10 +119,14 @@ async function createComission (comissionData) {
 /**
  * Function that updates a comission's information
  * @param {Object} comission Comission that it's information is going to be updated
+ * @param {Object} user_token objeto que tiene la informacion del usuario que quiere usar la funcionalidad
  */
-async function updateComission (comission) {
+async function updateComission (comission, user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "commission", comission.id)
+  if (data.error) { return data }
 
   //checking if object is valid
   var data_body = objFuncs.checkBody(comission, "comissionCreated")
@@ -150,10 +166,14 @@ async function updateComission (comission) {
  * Get the information of a given comission
  * @date 2019-10-23
  * @param {nustring} id id of the comission to be consulted
+ * @param {Object} user_token objeto que tiene la informacion del usuario que quiere usar la funcionalidad
  */
-async function getComission(id) {
+async function getComission(id, user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "commission", id)
+  if (data.error) { return data }
 
   try {
     data = await dbPostgres.sql('comissions.getComission', { id })
@@ -178,15 +198,49 @@ async function getComission(id) {
  * List trainers of the given comission 
  * @date 2019-11-14
  * @param {integer} id id of the comission to be consulted
+ * @param {Object} user_token objeto que tiene la informacion del usuario que quiere usar la funcionalidad
  */
-async function listTrainers(id) {
+async function listTrainers(id, user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "commission", id)
+  if (data.error) { return data }
 
   try {
 
     data = await dbPostgres.sql('comissions.listTrainers', { id })
 
+    data = data.rows
+    
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+  }
+
+  return data
+}
+
+/**
+ * List classes of the given comission 
+ * @date 2019-11-26
+ * @param {integer} id id of the comission to be consulted
+ * @param {Object} user_token objeto que tiene la informacion del usuario que quiere usar la funcionalidad
+ */
+async function listClasses(id, user_token) {
+
+  var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "commission", id)
+  if (data.error) { return data }
+
+  try {
+
+    data = await dbPostgres.sql('comissions.listClasses', { id })
     data = data.rows
     
   } catch (error) {
@@ -259,5 +313,6 @@ module.exports = {
   updateComission,
   deleteComission,
   getComission,
-  listTrainers
+  listTrainers,
+  listClasses
 }

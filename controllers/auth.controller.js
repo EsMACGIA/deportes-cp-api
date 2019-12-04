@@ -8,9 +8,8 @@ const hashing = require('../utilities/hashing')
 const objFuncs = require('../utilities/objectFunctions')
 const jwt = require('../utilities/jwt')
 const users = require('./users.controller')
-const email = require('../utilities/email')
+const emails = require('../utilities/email')
 const randomstring = require('randomstring')
-const trainersController = require('./trainers.controller')
 
 /**
  * Login user returning a token
@@ -50,25 +49,53 @@ async function loginUser (userData) {
         return data
     }
 
-    var trainer = await trainersController.getTrainer(data.rows[0].id);
+    var user_id = data.rows[0].id
+    var trainer = await dbPostgres.sql('trainer.getTrainer', { id: user_id })
+    
+    if (trainer.rows.length != 0){
+      trainer = trainer.rows[0]
+    }else{
+      trainer = {}
+    }
 
+
+    var comission = await dbPostgres.sql('comissions.getComission', { id: user_id })
+    if (comission.rows.length != 0){
+      comission = comission.rows[0]
+    }else{
+      comission = {}
+    }
+
+
+    user = {
+      id :user.id,
+      email : user.email
+    }
+
+    if (trainer.ci) {// 
+
+      user.ci = trainer.ci
+      user.name = trainer.name
+      user.lastname = trainer.lastname
+      user.role = "trainer"
+      
+    } else if(email.toLowerCase() == config.admin_email){
+      user.role = "admin"
+    } else {
+      user.name = comission.name
+      user.role = "commission"
+    }
+    
     //case where all data was valid
     var jwtObj = {
-        id: user.id
+        user: user
     }
     
     var token = jwt.signToken(jwtObj);
     
     data = {
+      user: user,
       token: token
-    }
-
-    if (trainer.ci) {
-      data.type = 3
-    } else if(email == config.roles.admin){
-      data.type = 1
-    } else {
-      data.type = 2
     }
     
     return data
@@ -105,7 +132,7 @@ async function restorePassword(account){
       user.password = hashing.createHash(passwd)
       data = await dbPostgres.sql('users.updateUser', user)
   
-      email.sendEmail(account, 
+      emails.sendEmail(account, 
       'Recuperacion de contraseña', 
       `Estimad@ usuari@, su contraseña temporal es ${passwd}.\nAtentamente, Sistema de Deportes CP`)
   

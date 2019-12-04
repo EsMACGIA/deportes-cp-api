@@ -38,7 +38,6 @@ async function getAllRequests () {
  * @param {Object} requestData data of the new request
  */
 async function createRequest (requestData) {
-
     var data = null 
   
     //checking if object is valid
@@ -56,7 +55,7 @@ async function createRequest (requestData) {
     }catch (error) {
       
       //Error handling
-      debug('Error: ', error)
+      console.log('Error: ', error)
       
       // Get error's message
       data = handleDatabaseValidations(error)
@@ -73,7 +72,7 @@ async function createRequest (requestData) {
 function handleDatabaseValidations(error) {
     var data = null
     var constraint = null
-  
+    
     if(error.queryContext){
       constraint = error.queryContext.error.constraint
     } else {

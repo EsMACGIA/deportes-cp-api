@@ -11,6 +11,7 @@ const users = require('./users.controller')
 const emails = require('../utilities/email')
 const randomstring = require('randomstring')
 const trainersController = require('./trainers.controller')
+const comissionsController = require('./comissions.controller')
 
 /**
  * Login user returning a token
@@ -50,26 +51,41 @@ async function loginUser (userData) {
         return data
     }
 
-    var trainer = await trainersController.getTrainer(data.rows[0].id);
+    var user_id = data.rows[0].id
+    var trainer = await trainersController.getTrainer(user_id);
+    var comission = await comissionsController.getComission(user_id); 
 
+
+    user = {
+      id :user.id,
+      email : user.email
+    }
+
+    if (trainer.ci) {// 
+
+      user.ci = trainer.ci
+      user.name = trainer.name
+      user.lastname = trainer.lastname
+      user.role = "trainer"
+      
+      // TODO: definir correo del admin y ponerlo en el .env
+    } else if(email == "deportesCP@gmail.com"){
+      user.role = "admin"
+    } else {
+      user.name = comission.name
+      user.role = "commission"
+    }
+    
     //case where all data was valid
     var jwtObj = {
-        id: user.id
+        user: user
     }
     
     var token = jwt.signToken(jwtObj);
     
     data = {
+      user: user,
       token: token
-    }
-
-    if (trainer.ci) {
-      data.type = 3
-      // TODO: definir correo del admin y ponerlo en el .env
-    } else if(email == "deportesCPadmin@cp.com"){
-      data.type = 1
-    } else {
-      data.type = 2
     }
     
     return data

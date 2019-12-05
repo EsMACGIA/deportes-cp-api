@@ -2,6 +2,7 @@
 
 // Configuration 
 const config = require('../config')
+const jwt = require('../utilities/jwt')
 const debug = require('debug')(`${config.debug}controllers:athletes`)
 const dbPostgres = require('../db/').postgres()
 const hashing = require('../utilities/hashing')
@@ -13,9 +14,12 @@ const objFuncs = require('../utilities/objectFunctions')
  * Deletes a athlete from the database
  * @param {number} id Athlete's id
  */
-async function deleteAthlete (id) {
+async function deleteAthlete (id, token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(token, "commission", -1)
+  if (data.error) { return data }
 
   try {
 
@@ -39,9 +43,12 @@ async function deleteAthlete (id) {
 /**
  * Gets all athlete in the database
  */
-async function getAllAthletes () {
+async function getAllAthletes (token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(token, "commission", -1)
+  if (data.error) { return data }
 
   try {
     data = await dbPostgres.sql('athlete.getAllAthletes')
@@ -67,9 +74,12 @@ async function getAllAthletes () {
  * Create athlete in the database
  * @param {Object} athleteData data of the new athlete
  */
-async function createAthlete (athleteData) {
+async function createAthlete (athleteData, token) {
 
-var data = null 
+  var data = null 
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(token, "commission", -1)
+  if (data.error) { return data }
 
   //checking if object is valid
   var data_body = objFuncs.checkBody(athleteData, "athlete")
@@ -100,9 +110,12 @@ var data = null
  * Function that updates an athlete's information
  * @param {Object} athlete Trainer that it's information is going to be updated
  */
-async function updateAthlete (athlete) {
+async function updateAthlete (athlete, token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(token, "commission", -1)
+  if (data.error) { return data }
 
   //checking if object is valid
   var data_body = objFuncs.checkBody(athlete, "athlete_update")
@@ -186,9 +199,12 @@ function handleDatabaseValidations(error) {
  * @date 2019-10-23
  * @param {nustring} email email of the athlete to be consulted
  */
-async function getAthlete(id) {
+async function getAthlete(id, token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(token, "commission", -1)
+  if (data.error) { return data }
 
   try {
     data = await dbPostgres.sql('athlete.getAthlete', { id })

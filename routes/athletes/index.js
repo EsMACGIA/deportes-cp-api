@@ -1,7 +1,9 @@
 'use strict'
 
-// Athletes Router
 const jwt = require('express-jwt');
+const config = require('../../config')
+
+// Athletes Router
 const athletes = require('express').Router()
 
 // Functions under /

@@ -2,25 +2,29 @@
 
 // Configuration 
 const config = require('../config')
+const jwt = require('../utilities/jwt')
 const debug = require('debug')(`${config.debug}controllers:trainers`)
 const dbPostgres = require('../db/').postgres()
 const hashing = require('../utilities/hashing')
 const objFuncs = require('../utilities/objectFunctions')
-const comissionController = require('./comissions.controller')
 
 /**
  * Deletes a trainer from the database
  * @date 2019-11-14
  * @param {number} id Trainer's id
  */
-async function deleteTrainer (id) {
+async function deleteTrainer (id, user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
 
   try {
 
     data = await dbPostgres.sql('users.deleteUser', { id })
     data.code = 201
+    data.action = 'DELETED'
 
   } catch (error) {
     // Error handling
@@ -40,9 +44,12 @@ async function deleteTrainer (id) {
  * Gets all trainer in the database
  * date: 2019-11-14
  */
-async function getAllTrainers () {
+async function getAllTrainers (user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
 
   try {
     data = await dbPostgres.sql('trainer.getAllTrainers')
@@ -69,9 +76,17 @@ async function getAllTrainers () {
  * @date 2019-11-14
  * @param {Object} trainerData data of the new trainer
  */
-async function createTrainer (trainerData) {
+async function createTrainer (trainerData, user_token) {
 
   var data = null 
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "commission", -1)
+  if (data.error) { return data }
+
+  var comission_owner = false
+  if (user_token.role == "commission"){
+    comission_owner = true
+  }
 
   //checking if object is valid
   var data_body = objFuncs.checkBody(trainerData, "trainer")
@@ -91,6 +106,20 @@ async function createTrainer (trainerData) {
         trainerData.user_id = user.id
       
         await transaction_db.sql('trainer.createTrainer', trainerData)
+        
+        // if the user creating the trainer is a commission we must also
+        // insert the relation between them by default
+        if (comission_owner){
+          var comission_id = user_token.id
+          var trainerComission = {
+            comission_id: comission_id,
+            trainer_id: user.id
+          }
+  
+          await transaction_db.sql('trainer.addComission', trainerComission)
+        }
+
+        
       
         return user
      })
@@ -115,7 +144,7 @@ async function createTrainer (trainerData) {
  * @date 2019-11-14
  * @param {Object} trainer Trainer that it's information is going to be updated
  */
-async function updateTrainer (trainer) {
+async function updateTrainer (trainer, user_token) {
 
   var data = null
 
@@ -124,6 +153,10 @@ async function updateTrainer (trainer) {
   if( data_body.error ){
     return data_body
   }
+
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "trainer", trainer.id)
+  if (data.error) { return data }
 
   try {
     
@@ -162,9 +195,12 @@ async function updateTrainer (trainer) {
  * @date 2019-11-14
  * @param {nustring} id id of the trainer to be consulted
  */
-async function getTrainer(id) {
+async function getTrainer(id, user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "trainer", id)
+  if (data.error) { return data }
 
   try {
     data = await dbPostgres.sql('trainer.getTrainer', { id })
@@ -192,9 +228,12 @@ async function getTrainer(id) {
  * @date 2019-11-14
  * @param {Object} trainerComission object with the id of trainer and comission to add
  */
-async function addComission(trainerComission) {
+async function addComission(trainerComission, user_token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
 
   //checking if object is valid
   var data_body = objFuncs.checkBody(trainerComission, "trainer_comission")
@@ -225,9 +264,10 @@ async function addComission(trainerComission) {
  * @date 2019-11-14
  * @param {Object} trainerComission object with the id of trainer and comission to add
  */
-async function deleteComission(trainerComission) {
+async function deleteComission(trainerComission, user_token) {
 
   var data = null
+  
 
   //checking if object is valid
   var data_body = objFuncs.checkBody(trainerComission, "trainer_comission")
@@ -235,11 +275,38 @@ async function deleteComission(trainerComission) {
     return data_body
   }
 
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "commission", trainerComission.comission_id)
+  if (data.error) { return data }
+
+  var comission_owner = false
+  if (user_token.role == "commission"){
+    comission_owner = true
+  }
+
   try {
       
-    data = await dbPostgres.sql('trainer.deleteComission', trainerComission)
+    await dbPostgres.transaction(async transaction_db => { // BEGIN
+
+      await transaction_db.sql('trainer.deleteComission', trainerComission)
+
+      // if a commission is the one deleting the relation and also this is the last commission
+      // for the trainer we must delete the whole trainer
+      if (comission_owner){
+        var query = await transaction_db.sql('trainer.listComissions', trainerComission)
+        var comissions = query.rows
+        if(comissions.length == 0){
+          await transaction_db.sql('users.deleteUser', {id : trainerComission.trainer_id})
+
+        }
+
+      }
+      
+
+   })
     
     data.code = 201
+    data.action = 'DELETED'
 
   } catch (error) {
     // Error handling

@@ -37,7 +37,41 @@ function verifyToken (token) {
   return validation
 }
 
+/**
+ * Confirm a user's role to give proper privileges over a view
+ * @param  {Object} user_token object with extracted from payload that has the user information
+ * @param  {string} role_required role that is required for the view
+ * @param {int} required_id id requerido para la vista, poner -1 si no es requerido
+ */
+function verifyRole (user_token, role_required, required_id){
+
+  var data = {}
+  var role = user_token.role
+  if (role_required == "commission" && (role != "commission" && role != "admin")) {
+    data.error = "No tiene los privilegios de comisión para esta funcionalidad"
+    data.code = 401
+  }
+
+  if(role_required == "admin" && role != "admin"){
+    data.error = "No tiene los privilegios de administrador para esta funcionalidad"
+    data.code = 401
+  }
+
+  if(role_required == "trainer" && role != "trainer" && role != "commission" && role != "admin"){
+    data.error = "No tiene los privilegios de entrenador para esta funcionalidad"
+    data.code = 401
+  }
+
+  if ( role == "commission" && user_token.id != required_id && required_id != -1){
+    data.error = "Tu usuario no tiene los privilegios para acceder a la vista de otro usuario"
+    data.code = 401
+  }
+
+  return data
+}
+
 module.exports = {
   signToken,
-  verifyToken
+  verifyToken,
+  verifyRole
 }

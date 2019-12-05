@@ -5,17 +5,15 @@ const comissionsController = require('../../controllers/comissions.controller')
 
 module.exports = async (req, res) => {
 
-  var data = await comissionsController.getAllComissions()
+  var user_token = req.user.user
+  var data = await comissionsController.getAllComissions(user_token)
 
-  if (data.constructor === Array) {
-    res.status(200)
+  if (data.error) {
+    res.status(data.code)
+    delete data['code']
   } else {
-    data = {
-      error: 'Something is wrong!'
-    }
-    res.status(500)
+    res.status(201)
   }
-
   res.send(data)
 
 }

@@ -130,6 +130,11 @@ function compareTypeObject(obj1, type_obj){
         status: '',
         retire: true
     }
+  }else if(type_obj == "updated_request"){
+    model_body = {
+        id: 0,
+        status: ''
+    }
   }else if(type_obj == "schedule"){   
     model_body = {
         weekday:0,

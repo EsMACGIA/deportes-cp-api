@@ -5,10 +5,7 @@ const config = require('../config')
 const jwt = require('../utilities/jwt')
 const debug = require('debug')(`${config.debug}controllers:athletes`)
 const dbPostgres = require('../db/').postgres()
-const hashing = require('../utilities/hashing')
 const objFuncs = require('../utilities/objectFunctions')
-
-// TODO: Fix every function!
 
 /**
  * Deletes a athlete from the database

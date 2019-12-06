@@ -15,6 +15,7 @@ const getClass = require('./getClass')
 const getAthletesInClass = require('./getAthletesInClass')
 const createAthleteInClass = require('./createAthleteInClass')
 const deleteAthleteInClass = require('./deleteAthleteInClass')
+const handleErrorToken = require('../errors/handleErrorToken')
 
 // Endpoints
 

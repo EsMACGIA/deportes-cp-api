@@ -11,11 +11,11 @@ const objFuncs = require('../utilities/objectFunctions')
  * Deletes a athlete from the database
  * @param {number} id Athlete's id
  */
-async function deleteAthlete (id, token) {
+async function deleteAthlete (id, user_token) {
 
   var data = null
   // verify that the role is the correct for the view 
-  data = jwt.verifyRole(token, "commission", -1)
+  data = jwt.verifyRole(user_token, "commission", -1)
   if (data.error) { return data }
 
   try {
@@ -40,11 +40,11 @@ async function deleteAthlete (id, token) {
 /**
  * Gets all athlete in the database
  */
-async function getAllAthletes (token) {
+async function getAllAthletes (user_token) {
 
   var data = null
   // verify that the role is the correct for the view 
-  data = jwt.verifyRole(token, "commission", -1)
+  data = jwt.verifyRole(user_token, "commission", -1)
   if (data.error) { return data }
 
   try {
@@ -71,11 +71,11 @@ async function getAllAthletes (token) {
  * Create athlete in the database
  * @param {Object} athleteData data of the new athlete
  */
-async function createAthlete (athleteData, token) {
+async function createAthlete (athleteData, user_token) {
 
   var data = null 
   // verify that the role is the correct for the view 
-  data = jwt.verifyRole(token, "commission", -1)
+  data = jwt.verifyRole(user_token, "commission", -1)
   if (data.error) { return data }
 
   //checking if object is valid
@@ -107,11 +107,11 @@ async function createAthlete (athleteData, token) {
  * Function that updates an athlete's information
  * @param {Object} athlete Trainer that it's information is going to be updated
  */
-async function updateAthlete (athlete, token) {
+async function updateAthlete (athlete, user_token) {
 
   var data = null
   // verify that the role is the correct for the view 
-  data = jwt.verifyRole(token, "commission", -1)
+  data = jwt.verifyRole(user_token, "commission", -1)
   if (data.error) { return data }
 
   //checking if object is valid
@@ -196,11 +196,11 @@ function handleDatabaseValidations(error) {
  * @date 2019-10-23
  * @param {nustring} email email of the athlete to be consulted
  */
-async function getAthlete(id, token) {
+async function getAthlete(id, user_token) {
 
   var data = null
   // verify that the role is the correct for the view 
-  data = jwt.verifyRole(token, "commission", -1)
+  data = jwt.verifyRole(user_token, "commission", -1)
   if (data.error) { return data }
 
   try {

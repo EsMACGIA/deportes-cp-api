@@ -224,12 +224,7 @@ async function getAthletesInClass(id) {
   try {
 
     data = await dbPostgres.sql('classes.getAthletesInClass', { id })
-    
-    if (data.rows.length != 0){
-      data = data.rows
-    }else{
-      data = {}
-    }
+    data = data.rows
 
   } catch (error) {
     // Error handling

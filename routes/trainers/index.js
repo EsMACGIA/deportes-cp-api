@@ -26,7 +26,7 @@ trainers.use('/',jwt({secret: config.jwt_key}), handleErrorToken)
 
 trainers.get('/',jwt({secret: config.jwt_key}), getAllTrainers)
 trainers.put('/',jwt({secret: config.jwt_key}), updateTrainer)
-trainers.delete('/deleteComission',jwt({secret: config.jwt_key}), deleteComission)
+trainers.post('/deleteComission',jwt({secret: config.jwt_key}), deleteComission)
 trainers.delete('/:id',jwt({secret: config.jwt_key}), deleteTrainer)
 trainers.post('/',jwt({secret: config.jwt_key}), createTrainer)
 trainers.get('/:id',jwt({secret: config.jwt_key}), getTrainer)

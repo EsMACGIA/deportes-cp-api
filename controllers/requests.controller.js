@@ -2,7 +2,7 @@
 
 // Configuration 
 const config = require('../config')
-
+const jwt = require('../utilities/jwt')
 const debug = require('debug')(`${config.debug}controllers:requests`)
 const dbPostgres = require('../db/').postgres()
 const objFuncs = require('../utilities/objectFunctions')
@@ -11,9 +11,12 @@ const objFuncs = require('../utilities/objectFunctions')
 /**
  * Gets all requests in the database
  */
-async function getAllRequests () {
+async function getAllRequests (user_token) {
 
     var data = null
+    // verify that the role is the correct for the view 
+    data = jwt.verifyRole(user_token, "admin", -1)
+    if (data.error) { return data }
   
     try {
       data = await dbPostgres.sql('requests.getAllRequests')
@@ -37,14 +40,19 @@ async function getAllRequests () {
  * Create Request in the database
  * @param {Object} requestData data of the new request
  */
-async function createRequest (requestData) {
+async function createRequest (requestData, user_token) {
     var data = null 
+    // verify that the role is the correct for the view 
+    data = jwt.verifyRole(user_token, "commission", -1)
+    if (data.error) { return data }
   
     //checking if object is valid
     var data_body = objFuncs.checkBody(requestData, "request")
     if( data_body.error ){
       return data_body
     }
+
+    
     
     try {
       
@@ -62,6 +70,40 @@ async function createRequest (requestData) {
     }
     return data
   
+}
+
+/**
+ * Update Request in the database
+ * @param {Object} updateData data of the updated request
+ */
+async function updateRequest (updateData, user_token) {
+  var data = null 
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(updateData, "updated_request")
+  if( data_body.error ){
+    return data_body
+  }
+
+  try {
+    
+    await dbPostgres.sql('requests.updateRequest', updateData)
+    data = updateData
+    data.action = "UPDATED"
+    
+  }catch (error) {
+    
+    //Error handling
+    console.log('Error: ', error)
+    
+    // Get error's message
+    data = handleDatabaseValidations(error)
+  }
+  return data
+
 }
 
 
@@ -115,5 +157,6 @@ function handleDatabaseValidations(error) {
 
 module.exports = {
     getAllRequests,
-    createRequest
+    createRequest,
+    updateRequest
 }

@@ -322,8 +322,8 @@ async function deleteComission(trainerComission, user_token) {
 }
 
 /**
- * Gets all trainer in the database
- * date: 2019-11-14
+ * Gets all comissions of a trainer
+ * date: 2019-12-05
  */
 async function listComissions (id, user_token) {
 
@@ -335,6 +335,38 @@ async function listComissions (id, user_token) {
   try {
 
     data = await dbPostgres.sql('trainer.listComissions', {trainer_id: id})
+
+    data = data.rows
+    data.code = 201
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+
+  }
+
+  return data
+
+}
+
+/**
+ * Gets all classes of a trainer
+ * date: 2019-12-05
+ */
+async function listClasses (id, user_token) {
+
+  var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "trainer", id)
+  if (data.error) { return data }
+
+  try {
+
+    data = await dbPostgres.sql('trainer.listClasses', {trainer_id: id})
 
     data = data.rows
     data.code = 201
@@ -440,5 +472,6 @@ module.exports = {
   getTrainer,
   addComission,
   deleteComission,
-  listComissions
+  listComissions,
+  listClasses
 }

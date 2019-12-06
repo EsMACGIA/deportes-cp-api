@@ -4,10 +4,10 @@
 const requestsController = require('../../controllers/requests.controller')
 
 module.exports = async (req, res) => {
-
-  var requestData = req.body
+    
+  var updatedRequest = req.body
   var user_token = req.user.user
-  var data = await requestsController.createRequest(requestData, user_token)
+  var data = await requestsController.updateRequest(updatedRequest, user_token)
 
   if (data.error) {
     res.status(data.code)

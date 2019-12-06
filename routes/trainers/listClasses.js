@@ -1,13 +1,13 @@
 'use strict'
 
 // Controllers
-const requestsController = require('../../controllers/requests.controller')
+const trainersController = require('../../controllers/trainers.controller')
 
 module.exports = async (req, res) => {
-
-  var requestData = req.body
+  
+  var id = req.params.id
   var user_token = req.user.user
-  var data = await requestsController.createRequest(requestData, user_token)
+  var data = await trainersController.listClasses(id, user_token)
 
   if (data.error) {
     res.status(data.code)

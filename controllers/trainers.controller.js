@@ -12,6 +12,7 @@ const objFuncs = require('../utilities/objectFunctions')
  * Deletes a trainer from the database
  * @date 2019-11-14
  * @param {number} id Trainer's id
+ * @param {object} user_token the information of the logged user
  */
 async function deleteTrainer (id, user_token) {
 
@@ -42,6 +43,7 @@ async function deleteTrainer (id, user_token) {
 
 /**
  * Gets all trainer in the database
+ * @param {object} user_token the information of the logged user
  * date: 2019-11-14
  */
 async function getAllTrainers (user_token) {
@@ -75,6 +77,7 @@ async function getAllTrainers (user_token) {
  * Create trainer in the database
  * @date 2019-11-14
  * @param {Object} trainerData data of the new trainer
+ * @param {object} user_token the information of the logged user
  */
 async function createTrainer (trainerData, user_token) {
 
@@ -163,6 +166,7 @@ async function createTrainer (trainerData, user_token) {
  * Function that updates an trainer's information
  * @date 2019-11-14
  * @param {Object} trainer Trainer that it's information is going to be updated
+ * @param {object} user_token the information of the logged user
  */
 async function updateTrainer (trainer, user_token) {
 
@@ -232,6 +236,7 @@ async function updateTrainer (trainer, user_token) {
  * Get the information of a given trainer
  * @date 2019-11-14
  * @param {nustring} id id of the trainer to be consulted
+ * @param {object} user_token the information of the logged user
  */
 async function getTrainer(id, user_token) {
 
@@ -361,6 +366,8 @@ async function deleteComission(trainerComission, user_token) {
 
 /**
  * Gets all comissions of a trainer
+ * @param {int} id the id of the trainer
+ * @param {object} user_token the information of the logged user
  * date: 2019-12-05
  */
 async function listComissions (id, user_token) {
@@ -393,6 +400,8 @@ async function listComissions (id, user_token) {
 
 /**
  * Gets all classes of a trainer
+ * @param {int} id the id of the trainer
+ * @param {object} user_token the information of the logged user
  * date: 2019-12-05
  */
 async function listClasses (id, user_token) {
@@ -423,6 +432,39 @@ async function listClasses (id, user_token) {
 
 }
 
+/**
+ * Gets all classes of a trainer
+ * @param {int} id the id of the trainer
+ * @param {object} user_token the information of the logged user
+ * date: 2019-12-05
+ */
+async function listAthletes (id, user_token) {
+
+  var data = null
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "trainer", id)
+  if (data.error) { return data }
+
+  try {
+
+    data = await dbPostgres.sql('trainer.listAthletes', {trainer_id: id})
+
+    data = data.rows
+    data.code = 201
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+
+  }
+
+  return data
+
+}
 
 /**
  * Function that check the error from the database and stablish error's message
@@ -511,5 +553,6 @@ module.exports = {
   addComission,
   deleteComission,
   listComissions,
-  listClasses
+  listClasses,
+  listAthletes
 }

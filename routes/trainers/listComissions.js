@@ -4,10 +4,10 @@
 const trainersController = require('../../controllers/trainers.controller')
 
 module.exports = async (req, res) => {
-
-  var trainerData = req.body
+  
+  var id = req.params.id
   var user_token = req.user.user
-  var data = await trainersController.createTrainer(trainerData,user_token)
+  var data = await trainersController.listComissions(id, user_token)
 
   if (data.error) {
     res.status(data.code)

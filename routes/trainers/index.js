@@ -1,5 +1,8 @@
 'use strict'
 
+const jwt = require('express-jwt');
+const config = require('../../config')
+
 // Trainers Router
 const trainers = require('express').Router()
 
@@ -11,15 +14,24 @@ const deleteTrainer = require('./deleteTrainer')
 const getTrainer = require('./getTrainer')
 const addComission = require('./addComission')
 const deleteComission = require('./deleteComission')
+const listComissions = require('./listComissions')
+const listClasses = require('./listClasses')
+const handleErrorToken = require('../errors/handleErrorToken')
 
 // Endpoints
-trainers.get('/', getAllTrainers)
-trainers.put('/', updateTrainer)
-trainers.delete('/deleteComission', deleteComission)
-trainers.delete('/:id', deleteTrainer)
-trainers.post('/', createTrainer)
-trainers.get('/:id', getTrainer)
-trainers.post('/addComission', addComission)
+
+//error handling
+trainers.use('/',jwt({secret: config.jwt_key}), handleErrorToken)
+
+trainers.get('/',jwt({secret: config.jwt_key}), getAllTrainers)
+trainers.put('/',jwt({secret: config.jwt_key}), updateTrainer)
+trainers.delete('/deleteComission',jwt({secret: config.jwt_key}), deleteComission)
+trainers.delete('/:id',jwt({secret: config.jwt_key}), deleteTrainer)
+trainers.post('/',jwt({secret: config.jwt_key}), createTrainer)
+trainers.get('/:id',jwt({secret: config.jwt_key}), getTrainer)
+trainers.post('/addComission',jwt({secret: config.jwt_key}), addComission)
+trainers.get('/listComissions/:id',jwt({secret: config.jwt_key}), listComissions)
+trainers.get('/listClasses/:id',jwt({secret: config.jwt_key}), listClasses)
 
 
 

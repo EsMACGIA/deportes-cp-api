@@ -24,4 +24,3 @@ classes.put('/', updateClass)
 classes.post('/', createClass)
 
 module.exports = classes
-

@@ -16,6 +16,7 @@ const addComission = require('./addComission')
 const deleteComission = require('./deleteComission')
 const listComissions = require('./listComissions')
 const listClasses = require('./listClasses')
+const listAthletes = require('./listAthletes')
 const handleErrorToken = require('../errors/handleErrorToken')
 
 // Endpoints
@@ -25,13 +26,14 @@ trainers.use('/',jwt({secret: config.jwt_key}), handleErrorToken)
 
 trainers.get('/',jwt({secret: config.jwt_key}), getAllTrainers)
 trainers.put('/',jwt({secret: config.jwt_key}), updateTrainer)
-trainers.delete('/deleteComission',jwt({secret: config.jwt_key}), deleteComission)
+trainers.post('/deleteComission',jwt({secret: config.jwt_key}), deleteComission)
 trainers.delete('/:id',jwt({secret: config.jwt_key}), deleteTrainer)
 trainers.post('/',jwt({secret: config.jwt_key}), createTrainer)
 trainers.get('/:id',jwt({secret: config.jwt_key}), getTrainer)
 trainers.post('/addComission',jwt({secret: config.jwt_key}), addComission)
 trainers.get('/listComissions/:id',jwt({secret: config.jwt_key}), listComissions)
 trainers.get('/listClasses/:id',jwt({secret: config.jwt_key}), listClasses)
+trainers.get('/listAthletes/:id',jwt({secret: config.jwt_key}), listAthletes)
 
 
 

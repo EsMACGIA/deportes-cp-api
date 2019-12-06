@@ -15,6 +15,7 @@ const getTrainer = require('./getTrainer')
 const addComission = require('./addComission')
 const deleteComission = require('./deleteComission')
 const listComissions = require('./listComissions')
+const listClasses = require('./listClasses')
 const handleErrorToken = require('../errors/handleErrorToken')
 
 // Endpoints
@@ -30,6 +31,7 @@ trainers.post('/',jwt({secret: config.jwt_key}), createTrainer)
 trainers.get('/:id',jwt({secret: config.jwt_key}), getTrainer)
 trainers.post('/addComission',jwt({secret: config.jwt_key}), addComission)
 trainers.get('/listComissions/:id',jwt({secret: config.jwt_key}), listComissions)
+trainers.get('/listClasses/:id',jwt({secret: config.jwt_key}), listClasses)
 
 
 

@@ -5,15 +5,14 @@ const requestsController = require('../../controllers/requests.controller')
 
 module.exports = async (req, res) => {
 
-  var data = await requestsController.getAllRequests()
+  var user_token = req.user.user
+  var data = await requestsController.getAllRequests(user_token)
 
-  if (data.constructor === Array) {
-    res.status(200)
+  if (data.error) {
+    res.status(data.code)
+    delete data['code']
   } else {
-    data = {
-      error: 'Something is wrong!'
-    }
-    res.status(500)
+    res.status(201)
   }
 
   res.send(data)

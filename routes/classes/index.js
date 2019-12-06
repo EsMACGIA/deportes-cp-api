@@ -14,7 +14,7 @@ const createAthleteInClass = require('./createAthleteInClass')
 const deleteAthleteInClass = require('./deleteAthleteInClass')
 
 // Endpoints
-classes.get('/athletes/', getAthletesInClass)
+classes.get('/athletes/:id', getAthletesInClass)
 classes.post('/athletes/', createAthleteInClass)
 classes.delete('/athletes/', deleteAthleteInClass)
 classes.delete('/:id', deleteClass)

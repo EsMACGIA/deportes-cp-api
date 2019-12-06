@@ -72,6 +72,40 @@ async function createRequest (requestData, user_token) {
   
 }
 
+/**
+ * Update Request in the database
+ * @param {Object} updateData data of the updated request
+ */
+async function updateRequest (updateData, user_token) {
+  var data = null 
+  // verify that the role is the correct for the view 
+  data = jwt.verifyRole(user_token, "admin", -1)
+  if (data.error) { return data }
+
+  //checking if object is valid
+  var data_body = objFuncs.checkBody(updateData, "updated_request")
+  if( data_body.error ){
+    return data_body
+  }
+
+  try {
+    
+    await dbPostgres.sql('requests.updateRequest', updateData)
+    data = updateData
+    data.action = "UPDATED"
+    
+  }catch (error) {
+    
+    //Error handling
+    console.log('Error: ', error)
+    
+    // Get error's message
+    data = handleDatabaseValidations(error)
+  }
+  return data
+
+}
+
 
 /**
  * Function that checks the error from the database and stablish error's message
@@ -123,5 +157,6 @@ function handleDatabaseValidations(error) {
 
 module.exports = {
     getAllRequests,
-    createRequest
+    createRequest,
+    updateRequest
 }

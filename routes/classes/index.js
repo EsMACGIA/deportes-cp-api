@@ -23,7 +23,7 @@ const handleErrorToken = require('../errors/handleErrorToken')
 
 //error handling
 classes.use('/',jwt({secret: config.jwt_key}), handleErrorToken)
-classes.get('/athletes/',jwt({secret: config.jwt_key}), getAthletesInClass)
+classes.get('/athletes/:id',jwt({secret: config.jwt_key}), getAthletesInClass)
 classes.post('/athletes/',jwt({secret: config.jwt_key}), createAthleteInClass)
 classes.delete('/athletes/',jwt({secret: config.jwt_key}), deleteAthleteInClass)
 classes.delete('/:id',jwt({secret: config.jwt_key}), deleteClass)

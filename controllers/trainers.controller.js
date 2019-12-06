@@ -194,6 +194,7 @@ async function updateTrainer (trainer, user_token) {
   data = jwt.verifyRole(user_token, "trainer", trainer.id)
   if (data.error) { return data }
 
+
   try {
     
     trainer.password = hashing.createHash(trainer.password)
@@ -205,16 +206,19 @@ async function updateTrainer (trainer, user_token) {
           await transaction_db.sql('users.updateUser', trainer)
         }
 
-        var user_id = trainer.id
-        await transaction_db.sql('comissions.deleteAllComissionsOfTrainer', {trainer_id: user_id})
+        if (user_token.role == "admin"){
+          var user_id = trainer.id
+          await transaction_db.sql('comissions.deleteAllComissionsOfTrainer', {trainer_id: user_id})
 
-        var comissions = trainer.comissions
-        var n = comissions.length
-        var comission_id = -1
-        for (var i = 0;  i < n ; i++ ){
-          comission_id = comissions[i]
-          await transaction_db.sql('trainer.addComission', {trainer_id: user_id, comission_id: comission_id})
+          var comissions = trainer.comissions
+          var n = comissions.length
+          var comission_id = -1
+          for (var i = 0;  i < n ; i++ ){
+            comission_id = comissions[i]
+            await transaction_db.sql('trainer.addComission', {trainer_id: user_id, comission_id: comission_id})
+          }
         }
+        
 
       })
     

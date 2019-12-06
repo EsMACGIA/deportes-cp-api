@@ -15,6 +15,10 @@ const getAthlete = require('./getAthlete')
 const handleErrorToken = require('../errors/handleErrorToken')
 
 // Endpoints
+
+//error handling
+athletes.use('/',jwt({secret: config.jwt_key}), handleErrorToken)
+
 athletes.get('/', jwt({secret: config.jwt_key}), getAllAthletes)
 athletes.put('/', jwt({secret: config.jwt_key}), updateAthlete)
 athletes.delete('/:id', jwt({secret: config.jwt_key}), deleteAthlete)

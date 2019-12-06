@@ -94,12 +94,17 @@ async function createTrainer (trainerData, user_token) {
     return data_body
   }
 
+  var data_error =  {}
   //checking that each comission id has a correct type
   trainerData.comissions.forEach(function (comission){
     if( !Number.isInteger(comission) ){       
-      return {error: "El arreglo de comisiones solo puede tener ids de comisiones"}
+      data_error= {error: "El arreglo de comisiones solo puede tener ids de comisiones", code: 400}
     }
   })
+
+  if (data_error.error){
+    return data_error
+  }
   
   try {
     trainerData.password = hashing.createHash(trainerData.password)
@@ -169,12 +174,17 @@ async function updateTrainer (trainer, user_token) {
     return data_body
   }
 
+  var data_error = {}
   //checking that each comission id has a correct type
   trainer.comissions.forEach(function (comission){
     if( !Number.isInteger(comission) ){       
-      return {error: "El arreglo de comisiones solo puede tener ids de comisiones"}
+      data_error = {error: "El arreglo de comisiones solo puede tener ids de comisiones", code: 400}
     }
   })
+
+  if (data_error.error){
+    return data_error
+  }
 
   // verify that the role is the correct for the view 
   data = jwt.verifyRole(user_token, "trainer", trainer.id)

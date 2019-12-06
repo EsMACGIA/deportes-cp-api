@@ -75,14 +75,16 @@ function compareTypeObject(obj1, type_obj){
         name: '',
         lastname: '',
         password: '',
-        ci: ''
+        ci: '',
+        comissions: []
       }
   }else if(type_obj == "trainer_update"){
     model_body = {
         id: 0,
         name: '',
         lastname: '',
-        password: ''
+        password: '',
+        comissions: []
       }
   }else if(type_obj == "athlete"){
     model_body = {

@@ -155,8 +155,8 @@ async function updateClass (classUpdate) {
 
         const class_id = classUpdate.id
 
-        await dbPostgres.sql('schedules.deleteAllSchedulesOfClass', {id: class_id})
-        data = await dbPostgres.sql('classes.updateClass', classUpdate)
+        await transaction_db.sql('schedules.deleteAllSchedulesOfClass', {id: class_id})
+        data = await transaction_db.sql('classes.updateClass', classUpdate)
     
         for (var i = 0;  i < n ; i++ ){
           schedules[i].class_id = class_id

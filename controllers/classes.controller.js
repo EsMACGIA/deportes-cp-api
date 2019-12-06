@@ -2,7 +2,7 @@
 
 // Configuration 
 const config = require('../config')
-
+const jwt = require('../utilities/jwt')
 const debug = require('debug')(`${config.debug}controllers:classes`)
 const dbPostgres = require('../db/').postgres()
 const objFuncs = require('../utilities/objectFunctions')
@@ -11,10 +11,24 @@ const objFuncs = require('../utilities/objectFunctions')
  * Deletes a class from the database
  * @param {number} id Class' id
  */
-async function deleteClass (id) {
+async function deleteClass (id, token) {
 
     var data = null
-  
+    // verify that the role is the correct for the view 
+    try{
+      data = await dbPostgres.sql('classes.getClass', { id })
+      data = jwt.verifyRole(token, "comission", data.comission_id)
+      if (data.error) { return data }
+    }catch(error){
+      // Error handling
+      debug('Error: ', error)
+      data = {
+        error: 'No se pudo obtener la información de la base de datos'
+      }
+      data.code = 400
+      return data
+    }
+    
     try {
   
       data = await dbPostgres.sql('classes.deleteClass', { id })
@@ -36,10 +50,14 @@ async function deleteClass (id) {
 /**
  * Gets all classes in the database
  */
-async function getAllClasses () {
+async function getAllClasses (token) {
 
     var data = null
   
+    // verify that the role is the correct for the view 
+    data = jwt.verifyRole(token, "admin", -1)
+    if (data.error) { return data }
+
     try {
       data = await dbPostgres.sql('classes.getAllClasses')
       data = data.rows
@@ -62,15 +80,19 @@ async function getAllClasses () {
  * Create class in the database
  * @param {Object} classData data of the new class
  */
-async function createClass (classData) {
+async function createClass (classData, token) {
 
     var data = null 
-  
+    
     //checking if object is valid
     var data_body = objFuncs.checkBody(classData, "class")
     if( data_body.error ){
       return data_body
     }
+    
+    // verify that the role is the correct for the view 
+    data = jwt.verifyRole(token, "comission", classData.comission_id)
+    if (data.error) { return data }
 
     //checking that each schedule has a correct body
     var error_data = {}
@@ -121,7 +143,7 @@ async function createClass (classData) {
  * Function that updates an class's information
  * @param {Object} classUpdate class that it's information is going to be updated
  */
-async function updateClass (classUpdate) {
+async function updateClass (classUpdate, token) {
 
     var data = null
   
@@ -129,6 +151,22 @@ async function updateClass (classUpdate) {
     var data_body = objFuncs.checkBody(classUpdate, "class_update")
     if( data_body.error ){
       return data_body
+    }
+
+    // verify that the role is the correct for the view 
+    try{
+      id = classUpdate.id
+      data = await dbPostgres.sql('classes.getClass', { id })
+      data = jwt.verifyRole(token, "comission", data.comission_id)
+      if (data.error) { return data }
+    }catch(error){
+      // Error handling
+      debug('Error: ', error)
+      data = {
+        error: 'Error en la base de datos'
+      }
+      data.code = 400
+      return data
     }
 
     //checking that each schedule has a correct body
@@ -180,25 +218,29 @@ async function updateClass (classUpdate) {
  * @date 2019-10-23
  * @param {nustring} id id of the class to be consulted
  */
-async function getClass(id) {
+async function getClass(id, token) {
 
     var data = null
-  
+    var jwt_data = null
     try {
 
       data = await dbPostgres.sql('classes.getClass', { id })
-      
-      if (data.rows.length != 0){
-        data = data.rows[0]
-        //we look for the schedules of the found class
-        const schedules = await dbPostgres.sql('classes.getClassSchedule', { id })
-        const array_schedules = schedules.rows
-        //add schedules to the data
-        data.schedules = array_schedules
-
-      }else{
-        data = {}
-      }
+      jwt_data = jwt.verifyRole(token, "comission", data.comission_id)
+      if (!jwt_data.error) { 
+        if (data.rows.length != 0){
+          data = data.rows[0]
+          //we look for the schedules of the found class
+          const schedules = await dbPostgres.sql('classes.getClassSchedule', { id })
+          const array_schedules = schedules.rows
+          //add schedules to the data
+          data.schedules = array_schedules
+  
+        }else{
+          data = {}
+        }
+       }else{
+         data = jwt_data
+       }
   
     } catch (error) {
       // Error handling
@@ -217,9 +259,23 @@ async function getClass(id) {
  * @date 2019-10-23
  * @param {nustring} id id of the class to be consulted
  */
-async function getAthletesInClass(id) {
+async function getAthletesInClass(id, token) {
 
   var data = null
+  // verify that the role is the correct for the view 
+  try{
+    data = await dbPostgres.sql('classes.getClass', { id })
+    data = jwt.verifyRole(token, "comission", data.comission_id)
+    if (data.error) { return data }
+  }catch(error){
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'Error en la base de datos'
+    }
+    data.code = 400
+    return data
+  }
 
   try {
 
@@ -242,9 +298,24 @@ async function getAthletesInClass(id) {
  * Create athlete_class in the database
  * @param {Object} classData data of the new class
  */
-async function createAthleteInClass (athlete_id, class_id) {
+async function createAthleteInClass (athlete_id, class_id, token) {
 
   var data = null 
+  // verify that the role is the correct for the view 
+  try{
+    data = await dbPostgres.sql('classes.getClass', { class_id })
+    data = jwt.verifyRole(token, "comission", data.comission_id)
+    if (data.error) { return data }
+  }catch(error){
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'Error en la base de datos'
+    }
+    data.code = 400
+    return data
+  }
+
   var classData = {athlete_id , class_id}
 
   try {
@@ -270,9 +341,24 @@ async function createAthleteInClass (athlete_id, class_id) {
  * Delete athlete_class in the database
  * @param {Object} classData data of the new class
  */
-async function deleteAthleteInClass (athlete_id, class_id) {
+async function deleteAthleteInClass (athlete_id, class_id, token) {
 
   var data = null 
+  // verify that the role is the correct for the view 
+  try{
+    data = await dbPostgres.sql('classes.getClass', { class_id })
+    data = jwt.verifyRole(token, "comission", data.comission_id)
+    if (data.error) { return data }
+  }catch(error){
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'Error en la base de datos'
+    }
+    data.code = 400
+    return data
+  }
+  
   var classData = {athlete_id , class_id}
   try {
     
@@ -291,6 +377,38 @@ async function deleteAthleteInClass (athlete_id, class_id) {
   }
   return data
 
+}
+
+async function getSchedule(id, token){
+  var data = null
+  var jwt_data = null
+  try {
+
+    data = await dbPostgres.sql('classes.getClass', { id })
+    jwt_data = jwt.verifyRole(token, "comission", data.comission_id)
+    if (!jwt_data.error) { 
+      if (data.rows.length != 0){
+        data = data.rows[0]
+        //we look for the schedules of the found class
+        const schedules = await dbPostgres.sql('classes.getClassSchedule', { id })
+        data = schedules.rows
+      }else{
+        data = []
+      }
+    }else{
+      data = jwt_data
+    }
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+  }
+
+    return data
 }
 
 /**
@@ -372,5 +490,6 @@ module.exports = {
     getClass,
     getAthletesInClass,
     createAthleteInClass,
-    deleteAthleteInClass
+    deleteAthleteInClass,
+    getSchedule
 }

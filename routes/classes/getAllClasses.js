@@ -5,7 +5,8 @@ const classesController = require('../../controllers/classes.controller')
 
 module.exports = async (req, res) => {
 
-  var data = await classesController.getAllClasses()
+  var user_token = req.user.user
+  var data = await classesController.getAllClasses(user_token)
 
   if (data.constructor === Array) {
     res.status(200)

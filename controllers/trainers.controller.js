@@ -93,6 +93,13 @@ async function createTrainer (trainerData, user_token) {
   if( data_body.error ){
     return data_body
   }
+
+  //checking that each comission id has a correct type
+  trainerData.comissions.forEach(function (comission){
+    if( !Number.isInteger(comission) ){       
+      return {error: "El arreglo de comisiones solo puede tener ids de comisiones"}
+    }
+  })
   
   try {
     trainerData.password = hashing.createHash(trainerData.password)
@@ -117,9 +124,17 @@ async function createTrainer (trainerData, user_token) {
           }
   
           await transaction_db.sql('trainer.addComission', trainerComission)
+        } else { // if the admin is the creator we must also include a list of default commissions
+          // for the trainer
+          var comissions = trainerData.comissions
+          var n = comissions.length
+          var comission_id = -1
+          var user_id = user.id
+          for (var i = 0;  i < n ; i++ ){
+            comission_id = comissions[i]
+            await transaction_db.sql('trainer.addComission', {trainer_id: user_id, comission_id: comission_id})
+          }
         }
-
-        
       
         return user
      })
@@ -154,27 +169,40 @@ async function updateTrainer (trainer, user_token) {
     return data_body
   }
 
+  //checking that each comission id has a correct type
+  trainer.comissions.forEach(function (comission){
+    if( !Number.isInteger(comission) ){       
+      return {error: "El arreglo de comisiones solo puede tener ids de comisiones"}
+    }
+  })
+
   // verify that the role is the correct for the view 
   data = jwt.verifyRole(user_token, "trainer", trainer.id)
   if (data.error) { return data }
 
   try {
     
-    if (trainer.password == "") {
+    trainer.password = hashing.createHash(trainer.password)
 
-        await dbPostgres.sql('trainer.updateTrainer', trainer)
+    await dbPostgres.transaction(async transaction_db => { // BEGIN
 
-    } else {
+        await transaction_db.sql('trainer.updateTrainer', trainer)
+        if (trainer.password != "") {// if the user wants a new password we update it
+          await transaction_db.sql('users.updateUser', trainer)
+        }
 
-        trainer.password = hashing.createHash(trainer.password)
+        var user_id = trainer.id
+        await transaction_db.sql('comissions.deleteAllComissionsOfTrainer', {trainer_id: user_id})
 
-        await dbPostgres.transaction(async transaction_db => { // BEGIN
+        var comissions = trainer.comissions
+        var n = comissions.length
+        var comission_id = -1
+        for (var i = 0;  i < n ; i++ ){
+          comission_id = comissions[i]
+          await transaction_db.sql('trainer.addComission', {trainer_id: user_id, comission_id: comission_id})
+        }
 
-            await transaction_db.sql('trainer.updateTrainer', trainer)
-            await transaction_db.sql('users.updateUser', trainer)
-
-         })
-    }
+      })
     
     data = trainer
     data.action = "UPDATED"

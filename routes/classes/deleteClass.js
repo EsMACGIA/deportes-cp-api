@@ -6,8 +6,9 @@ const classesController = require('../../controllers/classes.controller')
 module.exports = async (req, res) => {
 
   var id = req.params.id
+  var user_token = req.user.user
 
-  var data = await classesController.deleteClass(id)
+  var data = await classesController.deleteClass(id, user_token)
 
   res.send(data)
 

@@ -62,7 +62,12 @@ function verifyRole (user_token, role_required, required_id){
     data.code = 401
   }
 
-  if ( (role == "commission" || role == "trainer") && user_token.id != required_id && required_id != -1){
+  if ( (role == "commission" && role_required == "commission") && user_token.id != required_id && required_id != -1){
+    data.error = "Tu usuario no tiene los privilegios para acceder a la vista de otro usuario"
+    data.code = 401
+  }
+
+  if ( (role == "trainer" && role_required == "trainer") && user_token.id != required_id && required_id != -1){
     data.error = "Tu usuario no tiene los privilegios para acceder a la vista de otro usuario"
     data.code = 401
   }

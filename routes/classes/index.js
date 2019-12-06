@@ -15,6 +15,7 @@ const getClass = require('./getClass')
 const getAthletesInClass = require('./getAthletesInClass')
 const createAthleteInClass = require('./createAthleteInClass')
 const deleteAthleteInClass = require('./deleteAthleteInClass')
+const getSchedule = require('./getSchedule')
 const handleErrorToken = require('../errors/handleErrorToken')
 
 // Endpoints
@@ -28,6 +29,7 @@ classes.delete('/athletes/',jwt({secret: config.jwt_key}), deleteAthleteInClass)
 classes.delete('/:id',jwt({secret: config.jwt_key}), deleteClass)
 classes.get('/:id',jwt({secret: config.jwt_key}), getClass)
 classes.get('/',jwt({secret: config.jwt_key}), getAllClasses)
+classes.get('/schedule/:id',jwt({secret: config.jwt_key}), getSchedule)
 classes.put('/',jwt({secret: config.jwt_key}), updateClass)
 classes.post('/',jwt({secret: config.jwt_key}), createClass)
 

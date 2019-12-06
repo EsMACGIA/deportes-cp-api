@@ -221,12 +221,12 @@ async function updateClass (classUpdate, token) {
 async function getClass(id, token) {
 
     var data = null
-
+    var jwt_data = null
     try {
 
       data = await dbPostgres.sql('classes.getClass', { id })
-      data = jwt.verifyRole(token, "comission", data.comission_id)
-      if (!data.error) { 
+      jwt_data = jwt.verifyRole(token, "comission", data.comission_id)
+      if (!jwt_data.error) { 
         if (data.rows.length != 0){
           data = data.rows[0]
           //we look for the schedules of the found class
@@ -238,6 +238,8 @@ async function getClass(id, token) {
         }else{
           data = {}
         }
+       }else{
+         data = jwt_data
        }
   
     } catch (error) {
@@ -377,6 +379,38 @@ async function deleteAthleteInClass (athlete_id, class_id, token) {
 
 }
 
+async function getSchedule(id, token){
+  var data = null
+  var jwt_data = null
+  try {
+
+    data = await dbPostgres.sql('classes.getClass', { id })
+    jwt_data = jwt.verifyRole(token, "comission", data.comission_id)
+    if (!jwt_data.error) { 
+      if (data.rows.length != 0){
+        data = data.rows[0]
+        //we look for the schedules of the found class
+        const schedules = await dbPostgres.sql('classes.getClassSchedule', { id })
+        data = schedules.rows
+      }else{
+        data = []
+      }
+    }else{
+      data = jwt_data
+    }
+
+  } catch (error) {
+    // Error handling
+    debug('Error: ', error)
+    data = {
+      error: 'No se pudo obtener la información de la base de datos'
+    }
+    data.code = 400
+  }
+
+    return data
+}
+
 /**
  * Function that checks the error from the database and stablish error's message
  * @param {Object} error database's error
@@ -456,5 +490,6 @@ module.exports = {
     getClass,
     getAthletesInClass,
     createAthleteInClass,
-    deleteAthleteInClass
+    deleteAthleteInClass,
+    getSchedule
 }

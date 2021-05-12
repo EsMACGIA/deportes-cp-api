@@ -28,7 +28,7 @@
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
     "jsonwebtoken": "^8.5.1",
-    "nodemailer": "^6.3.1",
+    "nodemailer": "^6.4.16",
     "pg": "^7.12.1",
     "randomstring": "^1.1.5",
     "tinypg": "^5.0.1"
